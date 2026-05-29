@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Claude 技术分享 · 文档库</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+  :root { --bg:#fafaf7; --fg:#1a1a1a; --muted:#6b6b6b; --accent:#c96442; --border:#e3e3df; }
+  * { box-sizing:border-box; }
+  html, body { margin:0; padding:0; background:var(--bg); color:var(--fg);
+    font:16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; }
+  a { color:var(--accent); text-decoration:none; }
+  a:hover { text-decoration:underline; }
+  main { max-width:880px; margin:0 auto; padding:48px 24px; }
+  h1 { font-size:28px; margin:0 0 8px; }
+  .sub { color:var(--muted); margin-bottom:32px; }
+  ul.talks { list-style:none; margin:0; padding:0; }
+  ul.talks li { border-bottom:1px solid var(--border); padding:18px 0; }
+  ul.talks li:last-child { border-bottom:none; }
+  ul.talks h2 { font-size:18px; margin:0 0 6px; }
+  ul.talks .meta { color:var(--muted); font-size:13px; }
+  ul.talks .meta a { color:var(--muted); }
+  ul.talks .meta a:hover { color:var(--accent); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Claude 技术分享 · 文档库</h1>
+  <div class="sub">{{ talks|length }} 个视频 · 由 YouTube 字幕自动生成 · 更新于 {{ generated_at }}</div>
+  <ul class="talks">
+    {% for t in talks %}
+    <li>
+      <h2><a href="{{ t.html_path }}">{{ t.title }}</a></h2>
+      <div class="meta">
+        {{ t.uploader }} · {{ t.duration_hms }} · {{ t.upload_date_fmt }} ·
+        <a href="{{ t.yt_url }}" target="_blank" rel="noopener">YouTube ↗</a>
+      </div>
+    </li>
+    {% endfor %}
+  </ul>
+</main>
+</body>
+</html>
