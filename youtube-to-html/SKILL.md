@@ -44,12 +44,7 @@ https_proxy=http://127.0.0.1:7890 curl -s \
 ### Download VTT with yt-dlp + cookies
 
 ```bash
-mkdir -p /tmp/yt-to-doc-research/raw
-
-yt-dlp --cookies /tmp/yt-to-doc-research/youtube_cookies.txt \
-  --write-auto-sub --sub-lang en --skip-download \
-  --output "/tmp/yt-to-doc-research/raw/%(video_id)s.%(ext)s" \
-  "https://www.youtube.com/watch?v=VIDEO_ID"
+~/.hermes/skills/youtube-to-html/scripts/download_subtitles.sh VIDEO_ID
 ```
 
 > **Cookies 维护**：youtube_cookies.txt 位于 `/tmp/yt-to-doc-research/youtube_cookies.txt`，有效期约 30 天。
@@ -58,40 +53,8 @@ yt-dlp --cookies /tmp/yt-to-doc-research/youtube_cookies.txt \
 
 VTT 原始文件含大量 `<v Speaker>` 时间戳标签，直接喂给 Codex 会导致内容混乱。用清洗脚本处理：
 
-```python
-#!/usr/bin/env python3
-# /tmp/vtt_to_chunks.py
-import re, sys
-
-def parse_vtt_clean(path):
-    with open(path) as f:
-        content = f.read()
-    lines = content.split('\n')
-    segments = []
-    for line in lines:
-        ts_match = re.match(r'(\d{2}:\d{2}:\d{2}\.\d{3}) -->', line)
-        if ts_match:
-            continue
-        if line.strip() in ('', 'WEBVTT', 'Kind: captions', 'Language: en'):
-            continue
-        clean = re.sub(r'<[^>]+>', '', line).strip()
-        if clean:
-            segments.append(clean)
-    return ' '.join(segments)
-
-video_id = sys.argv[1]
-text = parse_vtt_clean(f'/tmp/yt-to-doc-research/raw/{video_id}.en.vtt')
-
-chunk_size = 8000
-for i in range(0, len(text), chunk_size):
-    chunk_num = i // chunk_size
-    with open(f'/tmp/yt-to-doc-research/raw/{video_id}_chunk_{chunk_num}.txt', 'w') as f:
-        f.write(text[i:i+chunk_size])
-    print(f'Chunk {chunk_num}: {len(text[i:i+chunk_size])} chars')
-```
-
 ```bash
-python3 /tmp/vtt_to_chunks.py VIDEO_ID
+~/.hermes/skills/youtube-to-html/scripts/vtt_cleaner.py VIDEO_ID
 ls /tmp/yt-to-doc-research/raw/VIDEO_ID_chunk_*.txt
 ```
 
@@ -317,6 +280,6 @@ curl -s "https://classmatexiaoming96-ux.github.io/youtube_course/VIDEO_ID.html" 
 | **浅色主题渗透** — Codex 用浅色背景代替 #0a0a0f | 深色主题破版，页面不可读 | 始终在 prompt 中附完整 CSS block；生成后 `grep -c "0a0a0f"` 验证 |
 | **推错仓库** — 推到 youtube_course 内容仓库 | 所有页面 404 | 始终克隆 `classmatexiaoming96-ux.github.io.git` |
 | **cp 交互确认** — `cp` 无 `\` 前缀卡在覆盖确认 | index.html 未更新 | 始终使用 `\cp -f` |
-| **VTT 时间戳未清洗** — `<v Speaker>` 标签未移除 | Codex 理解混乱，内容质量下降 | 始终用 `/tmp/vtt_to_chunks.py` 处理后再喂给 Codex |
+| **VTT 时间戳未清洗** — `<v Speaker>` 标签未移除 | Codex 理解混乱，内容质量下降 | 始终用 `scripts/vtt_cleaner.py` 处理后再喂给 Codex |
 | **Cookies 过期** — youtube_cookies.txt 超过 30 天 | 字幕下载失败 | 从浏览器重新导出 cookies 文件 |
 | **长视频 VTT** — 单文件 > 8000 chars 导致 CodeGen 混乱 | 内容截断或乱码 | 始终用 chunk 脚本分块 |
