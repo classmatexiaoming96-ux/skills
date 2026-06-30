@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 每日速递 · 2025-06-17</title>
+<meta name="description" content="昨日主线是「开放权重」回潮与智能体安全：多个团队放出可商用的开放权重模型，安全研究者则集中讨论工具调用带来的新攻击面。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Serif+SC:wght@500;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/digest.css">
+</head>
+<body>
+<main class="wrap">
+
+  <!-- ===== MASTHEAD ===== -->
+  <header class="masthead">
+    <div class="mh-kicker">
+      <span class="live"><span class="pulse"></span>DAILY DIGEST</span>
+      <span class="sep">/</span>
+      <span>AI 情报 · 每日一刊</span>
+    </div>
+    <h1 class="mh-title">AI 每日速递<span class="en">Artificial Intelligence · Daily Digest</span></h1>
+    <div class="mh-meta">
+      <span class="date">2025-06-17</span>
+      <span class="sep">·</span>
+      <span>星期二</span>
+      <span class="edition">第 41 期</span>
+    </div>
+    <p class="mh-intro">昨日主线是「开放权重」回潮与智能体安全：多个团队放出可商用的开放权重模型，安全研究者则集中讨论工具调用带来的新攻击面。</p>
+    <div class="stats">
+      <div class="stat"><div class="n">4</div><div class="l">今日要闻</div></div>
+      <div class="stat"><div class="n">3</div><div class="l">社区热议</div></div>
+      <div class="stat"><div class="n">2</div><div class="l">产品 / 概念</div></div>
+      <div class="stat"><div class="n">3</div><div class="l">开源热门</div></div>
+    </div>
+  </header>
+
+  <section class="sec reveal" style="--accent:var(--gold);--accent-soft:rgba(245,181,68,.12)">
+    <div class="sec-head"><span class="sec-no">01</span><h2>今日要闻</h2><span class="sec-meta">Google News</span></div>
+    <a class="lead" href="https://news.google.com/search?q=open%20weight%20model%20release" target="_blank" rel="noopener">
+      <span class="tag">头条</span>
+      <h3>开放权重模型扎堆发布，可商用许可成为最大卖点</h3>
+      <p>本周多支团队几乎同时放出开放权重模型，参数规模覆盖从可本地运行到接近前沿，且普遍采用宽松的可商用许可，开发者社区反应热烈。</p>
+      <div class="src">◷ <b>TechCrunch</b> <span class="dotsep">·</span> 1 天前</div>
+    </a>
+    <div class="rows">
+      <a class="row" href="https://news.google.com/search?q=ai%20agent%20tool%20call%20security" target="_blank" rel="noopener">
+        <div class="idx">01</div>
+        <div class="body">
+          <h4>安全：研究者演示通过工具调用诱导智能体执行越权操作</h4>
+          <p>强调对工具权限做最小化授权与人类确认环节的重要性。</p>
+          <div class="meta-line"><b style="color:var(--ink-dim)">Ars Technica</b> <span class="dotsep">·</span> 1 天前 <span class="dotsep">·</span> <span class="tag">安全</span></div>
+        </div>
+        <div class="arrow">↗</div>
+      </a>
+      <a class="row" href="https://news.google.com/search?q=ai%20agent%20startup%20funding" target="_blank" rel="noopener">
+        <div class="idx">02</div>
+        <div class="body">
+          <h4>融资：又一家智能体创业公司完成大额融资，估值翻倍</h4>
+          <p>资本继续押注「应用层智能体」而非底层模型。</p>
+          <div class="meta-line"><b style="color:var(--ink-dim)">Bloomberg</b> <span class="dotsep">·</span> 1 天前 <span class="dotsep">·</span> <span class="tag">融资</span></div>
+        </div>
+        <div class="arrow">↗</div>
+      </a>
+      <a class="row" href="https://news.google.com/search?q=ai%20teaching%20assistant%20university" target="_blank" rel="noopener">
+        <div class="idx">03</div>
+        <div class="body">
+          <h4>教育：高校批量引入 AI 助教，作业评测争议再起</h4>
+          <p>支持者看重规模化反馈，反对者担忧评分公平与学术诚信。</p>
+          <div class="meta-line"><b style="color:var(--ink-dim)">The Guardian</b> <span class="dotsep">·</span> 1 天前 <span class="dotsep">·</span> <span class="tag">教育</span></div>
+        </div>
+        <div class="arrow">↗</div>
+      </a>
+    </div>
+  </section>
+
+  <section class="sec reveal" style="--accent:var(--cyan);--accent-soft:rgba(79,209,197,.12)">
+    <div class="sec-head"><span class="sec-no">02</span><h2>社区热议</h2><span class="sec-meta">Hacker News · Reddit</span></div>
+    <div class="rows">
+      <a class="row" href="https://news.ycombinator.com/item?id=00000010" target="_blank" rel="noopener">
+        <div class="idx">01</div>
+        <div class="body">
+          <h4>开放权重模型实测:它在我的真实业务数据上表现如何</h4>
+          <p>一份细致的对比评测,涵盖延迟、成本与中文能力。</p>
+          <div class="meta-line"><b style="color:var(--ink-dim)">Hacker News</b> <span class="dotsep">·</span> ▲ 988 <span class="dotsep">·</span> 💬 322</div>
+        </div>
+        <div class="arrow">↗</div>
+      </a>
+      <a class="row" href="https://www.reddit.com/r/LocalLLaMA/" target="_blank" rel="noopener">
+        <div class="idx">02</div>
+        <div class="body">
+          <h4>我把智能体的工具权限锁死之后,踩坑反而少了</h4>
+          <p>r/LocalLLaMA 经验贴,最小授权 + 干跑(dry-run)成为高赞实践。</p>
+          <div class="quote">“给智能体的每一个工具,都应该假设它会在最糟的时机被调用。”</div>
+          <div class="meta-line"><b style="color:var(--ink-dim)">Reddit r/LocalLLaMA</b> <span class="dotsep">·</span> ▲ 712 <span class="dotsep">·</span> 💬 205</div>
+        </div>
+        <div class="arrow">↗</div>
+      </a>
+      <a class="row" href="https://news.ycombinator.com/item?id=00000011" target="_blank" rel="noopener">
+        <div class="idx">03</div>
+        <div class="body">
+          <h4>讨论:开放权重会不会终结闭源模型的护城河</h4>
+          <p>评论区从训练成本、数据飞轮聊到分发渠道,观点分裂。</p>
+          <div class="meta-line"><b style="color:var(--ink-dim)">Hacker News</b> <span class="dotsep">·</span> ▲ 534 <span class="dotsep">·</span> 💬 410</div>
+        </div>
+        <div class="arrow">↗</div>
+      </a>
+    </div>
+  </section>
+
+  <section class="sec reveal" style="--accent:var(--violet);--accent-soft:rgba(169,139,255,.12)">
+    <div class="sec-head"><span class="sec-no">03</span><h2>产品 · 概念</h2><span class="sec-meta">Products & Concepts</span></div>
+    <div class="cards">
+      <a class="card" href="https://news.ycombinator.com/show" target="_blank" rel="noopener">
+        <div class="ct">
+          <span class="ico">🔓</span>
+          <h4>OpenWeights Hub</h4>
+        </div>
+        <p class="tagline">one-click deploy open models</p>
+        <p>把新发布的开放权重模型一键部署到自有环境,内置量化与压测,本周热度很高。</p>
+        <div><span class="tag">新产品</span></div>
+      </a>
+      <div class="card">
+        <div class="ct">
+          <span class="ico">🛡️</span>
+          <h4>概念 · Least-Privilege Agents</h4>
+        </div>
+        <p class="tagline">给智能体的工具最小授权</p>
+        <p>随着工具调用攻击面被反复演示,「最小权限 + 人类确认」正成为智能体工程的安全默认。</p>
+        <div><span class="tag">概念热点</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec reveal" style="--accent:var(--green);--accent-soft:rgba(93,217,113,.12)">
+    <div class="sec-head"><span class="sec-no">04</span><h2>开源热门</h2><span class="sec-meta">GitHub Trending</span></div>
+    <a class="repo" href="https://github.com/trending" target="_blank" rel="noopener">
+      <div>
+        <div class="name">openweights / <b>serve-anything</b></div>
+        <div class="desc">开放权重模型的统一部署与压测工具,支持主流量化格式。</div>
+        <div class="repo-meta"><span><span class="lang-dot" style="background:#00ADD8"></span>Go</span> <span class="dotsep">·</span> <span class="tag">部署</span></div>
+      </div>
+      <div class="stars">
+        <div class="total">★ 12,880</div>
+        <div class="today">▲ 1,620 today</div>
+      </div>
+    </a>
+    <a class="repo" href="https://github.com/trending" target="_blank" rel="noopener">
+      <div>
+        <div class="name">agentsec / <b>toolguard</b></div>
+        <div class="desc">为智能体工具调用做权限沙箱与审计,附最小授权策略模板。</div>
+        <div class="repo-meta"><span><span class="lang-dot" style="background:#dea584"></span>Rust</span> <span class="dotsep">·</span> <span class="tag">安全</span></div>
+      </div>
+      <div class="stars">
+        <div class="total">★ 6,540</div>
+        <div class="today">▲ 1,030 today</div>
+      </div>
+    </a>
+    <a class="repo" href="https://github.com/trending" target="_blank" rel="noopener">
+      <div>
+        <div class="name">localmind / <b>bench-zh</b></div>
+        <div class="desc">面向中文场景的开放模型评测基准,覆盖推理、检索与长文。</div>
+        <div class="repo-meta"><span><span class="lang-dot" style="background:#3572A5"></span>Python</span> <span class="dotsep">·</span> <span class="tag">评测</span></div>
+      </div>
+      <div class="stars">
+        <div class="total">★ 3,920</div>
+        <div class="today">▲ 540 today</div>
+      </div>
+    </a>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="foot">
+    <div class="foot-top">
+      <a class="back" href="index.html">← 返回 · 浏览其他日报</a>
+      <span class="made">生成于 2025-06-17 08:30 · daily-digest skill</span>
+    </div>
+    <p class="disclaimer">
+      本刊由 daily-digest skill 自动汇编：要闻来自 Google News，社区热议来自 Hacker News / Reddit，
+      开源热门来自 GitHub Trending，产品与概念由上述信源综合提炼。摘要为机器辅助整理，链接指向原始信源；
+      如有出入请以原文为准。
+    </p>
+  </footer>
+
+</main>
+<script>
+/* reveal on scroll */
+(function () {
+  var io = new IntersectionObserver(function (es) {
+    es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(function (el) { io.observe(el); });
+}());
+</script>
+</body>
+</html>

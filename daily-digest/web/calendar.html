@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>历史日报 · AI 每日速递</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Serif+SC:wght@500;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/digest.css">
+<link rel="stylesheet" href="assets/calendar.css">
+<style>
+  .cal-page { max-width: 560px; margin: 0 auto; padding: 56px 22px 80px; }
+  .cal-page .top { text-align: center; margin-bottom: 34px; }
+  .cal-page .top .k { font-family: var(--mono); font-size: 11px; letter-spacing: .28em; color: var(--ink-faint); text-transform: uppercase; }
+  .cal-page .top h1 { font-family: var(--serif); font-size: 34px; margin: 12px 0 0; }
+  .cal-page .panel {
+    background: var(--panel); border: 1px solid var(--line-2);
+    border-radius: 18px; padding: 24px;
+  }
+  .cal-page .latest {
+    display: flex; justify-content: center; margin-top: 26px;
+  }
+  .cal-page .latest a {
+    display: inline-flex; align-items: center; gap: 9px;
+    border: 1px solid var(--line-2); border-radius: 999px; padding: 11px 22px;
+    color: var(--ink); transition: all .16s ease; font-size: 14px;
+  }
+  .cal-page .latest a:hover { border-color: var(--gold); color: var(--gold); }
+  .cal-page .empty-note { text-align: center; color: var(--ink-faint); padding: 40px 0; }
+</style>
+</head>
+<body>
+  <div class="cal-page">
+    <div class="top">
+      <div class="k">Archive · 历史刊期</div>
+      <h1>📅 日报日历</h1>
+    </div>
+    <div class="panel" id="calBox"></div>
+    <div class="latest"><a id="latestLink" href="index.html">阅读最新一期 →</a></div>
+  </div>
+
+<script src="manifest.js"></script>
+<script src="assets/calendar.js"></script>
+<script>
+(function () {
+  const D = window.Digest;
+  const box = document.getElementById("calBox");
+  const latest = D.latestDate();
+  document.getElementById("latestLink").href = latest ? ("index.html#" + latest) : "index.html";
+  if (!latest) { box.innerHTML = '<p class="empty-note">还没有任何日报。<br>运行 daily-digest skill 生成第一期。</p>'; return; }
+  let [y, m] = D.parseMonth(latest);
+  function paint() {
+    D.renderCalendar(box, {
+      year: y, month: m, selected: latest,
+      onMonth: (ny, nm) => { y = ny; m = nm; paint(); },
+      onPick: (date) => { location.href = "index.html#" + date; },
+    });
+  }
+  paint();
+}());
+</script>
+</body>
+</html>

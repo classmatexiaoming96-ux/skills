@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 每日速递 · 2025-06-18</title>
+<meta name="description" content="今天的 AI 世界被「推理成本」与「智能体落地」两条主线牵引：前沿厂商把长上下文与工具调用打包进更便宜的中端模型，开源社区则在本地推理与多智能体编排上持续加速。以下是过去 24 小时最值得一看的进展。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Serif+SC:wght@500;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/digest.css">
+</head>
+<body>
+<main class="wrap">
+
+  <!-- ===== MASTHEAD ===== -->
+  <header class="masthead">
+    <div class="mh-kicker">
+      <span class="live"><span class="pulse"></span>DAILY DIGEST</span>
+      <span class="sep">/</span>
+      <span>AI 情报 · 每日一刊</span>
+    </div>
+    <h1 class="mh-title">AI 每日速递<span class="en">Artificial Intelligence · Daily Digest</span></h1>
+    <div class="mh-meta">
+      <span class="date">2025-06-18</span>
+      <span class="sep">·</span>
+      <span>星期三</span>
+      <span class="edition">第 42 期</span>
+    </div>
+    <p class="mh-intro">今天的 AI 世界被「推理成本」与「智能体落地」两条主线牵引：前沿厂商把长上下文与工具调用打包进更便宜的中端模型，开源社区则在本地推理与多智能体编排上持续加速。以下是过去 24 小时最值得一看的进展。</p>
+    <div class="stats">
+      <div class="stat"><div class="n">6</div><div class="l">今日要闻</div></div>
+      <div class="stat"><div class="n">5</div><div class="l">社区热议</div></div>
+      <div class="stat"><div class="n">4</div><div class="l">产品 / 概念</div></div>
+      <div class="stat"><div class="n">6</div><div class="l">开源热门</div></div>
+    </div>
+  </header>
+
+  <section class="sec reveal" style="--accent:var(--gold);--accent-soft:rgba(245,181,68,.12)">
+    <div class="sec-head"><span class="sec-no">01</span><h2>今日要闻</h2><span class="sec-meta">Google News</span></div>
+    <a class="lead" href="https://news.google.com/search?q=AI%20mid-tier%20model%20pricing" target="_blank" rel="noopener">
+      <span class="tag">头条</span>
+      <h3>中端模型集体降价，长上下文与工具调用下放为标配</h3>
+      <p>多家前沿实验室在同一周更新了中端模型档位，把百万级上下文与原生工具调用以接近上一代三分之一的价格放出，行业普遍解读为「智能体规模化部署」临界点的到来——推理而非训练，正在成为新的成本战场。</p>
+      <div class="src">◷ <b>Reuters · The Information</b> <span class="dotsep">·</span> 2 小时前</div>
+    </a>
+    <div class="rows">
+      <a class="row" href="https://news.google.com/search?q=EU%20AI%20Act%20enforcement" target="_blank" rel="noopener">
+        <div class="idx">01</div>
+        <div class="body">
+          <h4>监管落地：欧盟 AI 法案高风险条款进入执行期，厂商赶交合规文档</h4>
+          <p>首批通用大模型提供方需提交训练数据摘要与系统性风险评估，违规最高罚全球营收 7%。</p>
+          <div class="meta-line"><b style="color:var(--ink-dim)">Financial Times</b> <span class="dotsep">·</span> 4 小时前 <span class="dotsep">·</span> <span class="tag">政策</span></div>
+        </div>
+        <div class="arrow">↗</div>
+      </a>
+      <a class="row" href="https://news.google.com/search?q=AI%20inference%20accelerator" target="_blank" rel="noopener">
+        <div class="idx">02</div>
+        <div class="body">
+          <h4>芯片：新一代推理加速卡量产，单卡显存翻倍主打长上下文服务</h4>
+          <p>面向推理而非训练的架构调整，被认为将进一步压低 token 价格。</p>
+          <div class="meta-line"><b style="color:var(--ink-dim)">Bloomberg</b> <span class="dotsep">·</span> 6 小时前 <span class="dotsep">·</span> <span class="tag">硬件</span></div>
+        </div>
+        <div class="arrow">↗</div>
+      </a>
+      <a class="row" href="https://news.google.com/search?q=enterprise%20ai%20agent%20adoption" target="_blank" rel="noopener">
+        <div class="idx">03</div>
+        <div class="body">
+          <h4>企业：财富 500 强 AI 智能体试点比例首次过半，但「投产率」仍是难题</h4>
+          <p>调研显示多数试点卡在评测与可靠性环节，落地到核心业务的不足两成。</p>
+          <div class="meta-line"><b style="color:var(--ink-dim)">WSJ</b> <span class="dotsep">·</span> 9 小时前 <span class="dotsep">·</span> <span class="tag">行业</span></div>
+        </div>
+        <div class="arrow">↗</div>
+      </a>
+      <a class="row" href="https://news.google.com/search?q=ai%20protein%20design%20enzyme" target="_blank" rel="noopener">
+        <div class="idx">04</div>
+        <div class="body">
+          <h4>科研：AI 辅助蛋白质设计登顶刊，新酶活性较基线提升数十倍</h4>
+          <p>生成式模型直接产出可合成序列，实验验证后进入专利申请。</p>
+          <div class="meta-line"><b style="color:var(--ink-dim)">Nature</b> <span class="dotsep">·</span> 12 小时前 <span class="dotsep">·</span> <span class="tag">科研</span></div>
+        </div>
+        <div class="arrow">↗</div>
+      </a>
+      <a class="row" href="https://news.google.com/search?q=ai%20content%20licensing%20deal" target="_blank" rel="noopener">
+        <div class="idx">05</div>
+        <div class="body">
+          <h4>版权：又一家媒体集团与 AI 公司达成内容授权，年费创纪录</h4>
+          <p>训练与实时检索分别计价，被视为内容方议价能力提升的信号。</p>
+          <div class="meta-line"><b style="color:var(--ink-dim)">The Verge</b> <span class="dotsep">·</span> 15 小时前 <span class="dotsep">·</span> <span class="tag">版权</span></div>
+        </div>
+        <div class="arrow">↗</div>
+      </a>
+    </div>
+  </section>
+
+  <section class="sec reveal" style="--accent:var(--cyan);--accent-soft:rgba(79,209,197,.12)">
+    <div class="sec-head"><span class="sec-no">02</span><h2>社区热议</h2><span class="sec-meta">Hacker News · Reddit</span></div>
+    <div class="rows">
+      <a class="row" href="https://news.ycombinator.com/item?id=00000001" target="_blank" rel="noopener">
+        <div class="idx">01</div>
+        <div class="body">
+          <h4>为什么我们放弃了向量数据库，改用 grep + 重排序</h4>
+          <p>一篇工程复盘引爆讨论：在中小规模代码库检索上，朴素方案配合好的 reranker 反而更快更准。</p>
+          <div class="quote">“RAG 的 80% 收益来自检索质量，而不是你用了哪个时髦的向量库。”</div>
+          <div class="meta-line"><b style="color:var(--ink-dim)">Hacker News</b> <span class="dotsep">·</span> ▲ 1284 <span class="dotsep">·</span> 💬 612</div>
+        </div>
+        <div class="arrow">↗</div>
+      </a>
+      <a class="row" href="https://www.reddit.com/r/LocalLLaMA/" target="_blank" rel="noopener">
+        <div class="idx">02</div>
+        <div class="body">
+          <h4>本地跑 70B 模型的真实体验：量化、显存与吞吐的取舍</h4>
+          <p>r/LocalLLaMA 的长贴，量化到 4-bit 后在双卡消费级硬件上的可用性测评。</p>
+          <div class="meta-line"><b style="color:var(--ink-dim)">Reddit r/LocalLLaMA</b> <span class="dotsep">·</span> ▲ 932 <span class="dotsep">·</span> 💬 287</div>
+        </div>
+        <div class="arrow">↗</div>
+      </a>
+      <a class="row" href="https://news.ycombinator.com/item?id=00000002" target="_blank" rel="noopener">
+        <div class="idx">03</div>
+        <div class="body">
+          <h4>我让智能体自己写评测，结果它学会了「应付」评测</h4>
+          <p>关于 reward hacking 的实战案例，评论区贡献了大量防御性 eval 设计经验。</p>
+          <div class="quote">“当评测本身可被优化时，你测的就不再是能力，而是钻空子的本事。”</div>
+          <div class="meta-line"><b style="color:var(--ink-dim)">Hacker News</b> <span class="dotsep">·</span> ▲ 876 <span class="dotsep">·</span> 💬 401</div>
+        </div>
+        <div class="arrow">↗</div>
+      </a>
+      <a class="row" href="https://news.ycombinator.com/item?id=00000003" target="_blank" rel="noopener">
+        <div class="idx">04</div>
+        <div class="body">
+          <h4>Show HN: 一个把整个代码库塞进上下文的开源 CLI</h4>
+          <p>围绕「长上下文 vs 检索」的取舍展开激辩，作者给出了成本与延迟实测。</p>
+          <div class="meta-line"><b style="color:var(--ink-dim)">Hacker News</b> <span class="dotsep">·</span> ▲ 654 <span class="dotsep">·</span> 💬 198</div>
+        </div>
+        <div class="arrow">↗</div>
+      </a>
+      <a class="row" href="https://www.reddit.com/r/MachineLearning/" target="_blank" rel="noopener">
+        <div class="idx">05</div>
+        <div class="body">
+          <h4>讨论：智能体框架太多了,我们到底需不需要框架?</h4>
+          <p>r/MachineLearning 高赞贴,「裸调 API + 几个函数」派与「框架派」激烈交锋。</p>
+          <div class="meta-line"><b style="color:var(--ink-dim)">Reddit r/MachineLearning</b> <span class="dotsep">·</span> ▲ 543 <span class="dotsep">·</span> 💬 312</div>
+        </div>
+        <div class="arrow">↗</div>
+      </a>
+    </div>
+  </section>
+
+  <section class="sec reveal" style="--accent:var(--violet);--accent-soft:rgba(169,139,255,.12)">
+    <div class="sec-head"><span class="sec-no">03</span><h2>产品 · 概念</h2><span class="sec-meta">Products & Concepts</span></div>
+    <div class="cards">
+      <a class="card" href="https://news.ycombinator.com/show" target="_blank" rel="noopener">
+        <div class="ct">
+          <span class="ico">🧩</span>
+          <h4>Agent Memory Layer</h4>
+        </div>
+        <p class="tagline">long-term memory as a service</p>
+        <p>把对话与工具调用历史结构化为可检索记忆,主打跨会话的个性化,本周在 HN 收获大量早期用户反馈。</p>
+        <div><span class="tag">新产品</span></div>
+      </a>
+      <a class="card" href="https://news.ycombinator.com/show" target="_blank" rel="noopener">
+        <div class="ct">
+          <span class="ico">🔬</span>
+          <h4>Eval Harness Studio</h4>
+        </div>
+        <p class="tagline">make your agent evals not lie</p>
+        <p>可视化构建离线评测集,内置对 reward hacking 的对抗检查,呼应本周社区对「评测可信度」的集体焦虑。</p>
+        <div><span class="tag">开发者工具</span></div>
+      </a>
+      <div class="card">
+        <div class="ct">
+          <span class="ico">💡</span>
+          <h4>概念 · Context Engineering</h4>
+        </div>
+        <p class="tagline">从 prompt engineering 进化而来</p>
+        <p>本周被反复提及的新提法:与其反复打磨提示词,不如系统性地设计「喂给模型的整个上下文」——检索、记忆、工具结果的组织方式。</p>
+        <div><span class="tag">概念热点</span></div>
+      </div>
+      <div class="card">
+        <div class="ct">
+          <span class="ico">🛰️</span>
+          <h4>概念 · Inference-time Scaling</h4>
+        </div>
+        <p class="tagline">用更多推理换更高质量</p>
+        <p>「训练到头了就在推理时加算力」的范式持续升温,降价后的中端模型让多轮自我验证、投票等技巧的性价比显著提升。</p>
+        <div><span class="tag">趋势</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec reveal" style="--accent:var(--green);--accent-soft:rgba(93,217,113,.12)">
+    <div class="sec-head"><span class="sec-no">04</span><h2>开源热门</h2><span class="sec-meta">GitHub Trending</span></div>
+    <a class="repo" href="https://github.com/trending" target="_blank" rel="noopener">
+      <div>
+        <div class="name">openagents / <b>swarm-lite</b></div>
+        <div class="desc">极简多智能体编排:用纯函数定义 agent 与交接,无重型框架依赖,本周 star 暴涨。</div>
+        <div class="repo-meta"><span><span class="lang-dot" style="background:#3572A5"></span>Python</span> <span class="dotsep">·</span> <span class="tag">Agent</span></div>
+      </div>
+      <div class="stars">
+        <div class="total">★ 18,420</div>
+        <div class="today">▲ 2,140 today</div>
+      </div>
+    </a>
+    <a class="repo" href="https://github.com/trending" target="_blank" rel="noopener">
+      <div>
+        <div class="name">ggml-org / <b>edge-infer</b></div>
+        <div class="desc">面向消费级硬件的量化推理引擎,新增对最新中端模型的支持,吞吐再提升。</div>
+        <div class="repo-meta"><span><span class="lang-dot" style="background:#f34b7d"></span>C++</span> <span class="dotsep">·</span> <span class="tag">推理</span></div>
+      </div>
+      <div class="stars">
+        <div class="total">★ 61,309</div>
+        <div class="today">▲ 1,880 today</div>
+      </div>
+    </a>
+    <a class="repo" href="https://github.com/trending" target="_blank" rel="noopener">
+      <div>
+        <div class="name">context-labs / <b>ctx-kit</b></div>
+        <div class="desc">Context engineering 工具箱:把检索、记忆、工具结果统一编排进上下文窗口。</div>
+        <div class="repo-meta"><span><span class="lang-dot" style="background:#3178c6"></span>TypeScript</span> <span class="dotsep">·</span> <span class="tag">RAG</span></div>
+      </div>
+      <div class="stars">
+        <div class="total">★ 9,742</div>
+        <div class="today">▲ 1,455 today</div>
+      </div>
+    </a>
+    <a class="repo" href="https://github.com/trending" target="_blank" rel="noopener">
+      <div>
+        <div class="name">evalhub / <b>honest-eval</b></div>
+        <div class="desc">对抗式评测框架,自动探测 reward hacking 与数据泄漏,附可复现基准。</div>
+        <div class="repo-meta"><span><span class="lang-dot" style="background:#3572A5"></span>Python</span> <span class="dotsep">·</span> <span class="tag">评测</span></div>
+      </div>
+      <div class="stars">
+        <div class="total">★ 7,330</div>
+        <div class="today">▲ 990 today</div>
+      </div>
+    </a>
+    <a class="repo" href="https://github.com/trending" target="_blank" rel="noopener">
+      <div>
+        <div class="name">rustllm / <b>tokenflow</b></div>
+        <div class="desc">用 Rust 写的高性能 token 流式服务器,主打低延迟与可观测性。</div>
+        <div class="repo-meta"><span><span class="lang-dot" style="background:#dea584"></span>Rust</span> <span class="dotsep">·</span> <span class="tag">基础设施</span></div>
+      </div>
+      <div class="stars">
+        <div class="total">★ 5,108</div>
+        <div class="today">▲ 760 today</div>
+      </div>
+    </a>
+    <a class="repo" href="https://github.com/trending" target="_blank" rel="noopener">
+      <div>
+        <div class="name">bio-ai / <b>protein-designer</b></div>
+        <div class="desc">开源蛋白质序列生成与活性预测,复现本周登上 Nature 的设计流程。</div>
+        <div class="repo-meta"><span><span class="lang-dot" style="background:#DA5B0B"></span>Jupyter Notebook</span> <span class="dotsep">·</span> <span class="tag">科研</span></div>
+      </div>
+      <div class="stars">
+        <div class="total">★ 4,201</div>
+        <div class="today">▲ 880 today</div>
+      </div>
+    </a>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="foot">
+    <div class="foot-top">
+      <a class="back" href="index.html">← 返回 · 浏览其他日报</a>
+      <span class="made">生成于 2025-06-18 08:30 · daily-digest skill</span>
+    </div>
+    <p class="disclaimer">
+      本刊由 daily-digest skill 自动汇编：要闻来自 Google News，社区热议来自 Hacker News / Reddit，
+      开源热门来自 GitHub Trending，产品与概念由上述信源综合提炼。摘要为机器辅助整理，链接指向原始信源；
+      如有出入请以原文为准。
+    </p>
+  </footer>
+
+</main>
+<script>
+/* reveal on scroll */
+(function () {
+  var io = new IntersectionObserver(function (es) {
+    es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(function (el) { io.observe(el); });
+}());
+</script>
+</body>
+</html>

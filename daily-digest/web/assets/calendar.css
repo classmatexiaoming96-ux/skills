@@ -1,0 +1,47 @@
+/* ============================================================
+   calendar.css — month grid styling, shared by the viewer overlay
+   and the standalone calendar.html page.
+   ============================================================ */
+.cal-head {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 14px;
+}
+.cal-title { font-family: var(--mono); font-size: 15px; font-weight: 600; letter-spacing: .04em; }
+.cal-nav {
+  width: 34px; height: 34px; border-radius: 9px; cursor: pointer;
+  background: var(--panel); border: 1px solid var(--line-2); color: var(--ink-dim);
+  font-size: 18px; line-height: 1; transition: all .16s ease;
+}
+.cal-nav:hover { border-color: var(--gold); color: var(--gold); }
+
+.cal-grid {
+  display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px;
+}
+.cal-dow {
+  text-align: center; font-size: 11px; color: var(--ink-faint);
+  font-family: var(--mono); padding-bottom: 4px;
+}
+.cal-cell {
+  position: relative; aspect-ratio: 1 / 1;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 10px; font-family: var(--mono); font-size: 14px;
+  border: 1px solid transparent;
+}
+.cal-cell.empty { visibility: hidden; }
+.cal-cell.no { color: var(--ink-faint); opacity: .45; }
+.cal-cell.has {
+  cursor: pointer; color: var(--ink);
+  background: var(--panel); border-color: var(--line-2);
+  transition: all .15s ease;
+}
+.cal-cell.has:hover { border-color: var(--gold); color: var(--gold); transform: translateY(-2px); }
+.cal-cell.has .mark {
+  position: absolute; bottom: 6px; left: 50%; transform: translateX(-50%);
+  width: 5px; height: 5px; border-radius: 50%; background: var(--gold);
+  box-shadow: 0 0 8px 1px var(--gold);
+}
+.cal-cell.sel {
+  background: var(--accent-soft, rgba(245,181,68,.14));
+  border-color: var(--gold); color: var(--gold);
+}
+.cal-cell.sel .mark { background: var(--gold); }
