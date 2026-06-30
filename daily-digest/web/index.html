@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 每日速递 · Daily Digest</title>
+<meta name="description" content="每天一刊的 AI 情报速递：要闻、社区热议、产品概念与开源热门。">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Serif+SC:wght@500;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/digest.css">
+<style>
+  html, body { height: 100%; }
+  body { display: flex; flex-direction: column; overflow: hidden; }
+
+  /* top control bar */
+  .vbar {
+    flex: none; display: flex; align-items: center; gap: 14px;
+    padding: 12px 20px; border-bottom: 1px solid var(--line-2);
+    background: rgba(11,12,16,.86); backdrop-filter: blur(14px);
+    z-index: 20;
+  }
+  .vbar .brand {
+    display: flex; align-items: center; gap: 10px; font-family: var(--serif);
+    font-weight: 700; font-size: 17px; white-space: nowrap;
+  }
+  .vbar .brand .pulse {
+    width: 8px; height: 8px; border-radius: 50%; background: var(--gold);
+    box-shadow: 0 0 12px 1px var(--gold);
+  }
+  .vbar .brand .en { font-family: var(--mono); font-size: 10px; letter-spacing:.2em; color: var(--ink-faint); font-weight: 500; }
+  .vbar .now { display: flex; flex-direction: column; line-height: 1.2; margin: 0 auto; text-align: center; }
+  .vbar .now #vTitle { font-family: var(--mono); font-size: 15px; font-weight: 600; }
+  .vbar .now #vSub { font-size: 11.5px; color: var(--ink-faint); margin-top: 2px; }
+  .vbtn {
+    display: inline-flex; align-items: center; gap: 7px; cursor: pointer;
+    border: 1px solid var(--line-2); background: var(--panel); color: var(--ink-dim);
+    border-radius: 999px; padding: 8px 14px; font-size: 13px; font-family: var(--sans);
+    transition: all .16s ease;
+  }
+  .vbtn:hover:not(:disabled) { border-color: var(--gold); color: var(--gold); }
+  .vbtn:disabled { opacity: .32; cursor: default; }
+  .vbtn.icon { padding: 8px 12px; font-size: 15px; }
+  .vbar .group { display: flex; gap: 8px; }
+
+  /* iframe stage */
+  .stage { flex: 1; position: relative; }
+  #frame { width: 100%; height: 100%; border: 0; background: var(--bg); }
+
+  /* calendar overlay */
+  .cal-overlay {
+    position: fixed; inset: 0; z-index: 50; display: none;
+    align-items: flex-start; justify-content: center;
+    background: rgba(5,6,9,.7); backdrop-filter: blur(6px);
+    padding: 80px 20px;
+  }
+  .cal-overlay.open { display: flex; }
+  .cal-panel {
+    width: 100%; max-width: 460px; background: var(--panel-2);
+    border: 1px solid var(--line-2); border-radius: 18px; padding: 22px;
+    box-shadow: 0 30px 80px -20px rgba(0,0,0,.7);
+    animation: pop .22s ease;
+  }
+  @keyframes pop { from { transform: translateY(-12px) scale(.98); opacity: 0; } }
+  .cal-panel .ptop { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  .cal-panel .ptop h3 { font-family: var(--serif); margin: 0; font-size: 19px; }
+  .cal-panel .ptop button { background: none; border: 0; color: var(--ink-faint); font-size: 22px; cursor: pointer; line-height: 1; }
+  .cal-panel .ptop button:hover { color: var(--ink); }
+  .cal-hint { font-size: 12px; color: var(--ink-faint); margin: 14px 2px 0; text-align: center; }
+</style>
+</head>
+<body>
+
+  <div class="vbar">
+    <a class="brand" href="#"><span class="pulse"></span>AI 每日速递 <span class="en">DAILY&nbsp;DIGEST</span></a>
+    <div class="now">
+      <span id="vTitle">—</span>
+      <span id="vSub"></span>
+    </div>
+    <div class="group">
+      <button class="vbtn icon" id="vPrev" title="前一天 (←)">‹</button>
+      <button class="vbtn" id="vCal">📅 日历</button>
+      <button class="vbtn icon" id="vNext" title="后一天 (→)">›</button>
+    </div>
+  </div>
+
+  <div class="stage">
+    <iframe id="frame" title="日报内容"></iframe>
+  </div>
+
+  <div class="cal-overlay" id="calOverlay">
+    <div class="cal-panel">
+      <div class="ptop">
+        <h3>📅 选择日期</h3>
+        <button id="calClose" aria-label="关闭">×</button>
+      </div>
+      <div id="calBox"></div>
+      <p class="cal-hint">高亮的日期表示当天有日报 · 点击查看</p>
+    </div>
+  </div>
+
+<link rel="stylesheet" href="assets/calendar.css">
+<script src="manifest.js"></script>
+<script src="assets/calendar.js"></script>
+<script src="assets/viewer.js"></script>
+</body>
+</html>

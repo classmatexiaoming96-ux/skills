@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 每日速递 · {{DATE}}</title>
+<meta name="description" content="{{INTRO_PLAIN}}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Serif+SC:wght@500;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/digest.css">
+</head>
+<body>
+<main class="wrap">
+
+  <!-- ===== MASTHEAD ===== -->
+  <header class="masthead">
+    <div class="mh-kicker">
+      <span class="live"><span class="pulse"></span>DAILY DIGEST</span>
+      <span class="sep">/</span>
+      <span>AI 情报 · 每日一刊</span>
+    </div>
+    <h1 class="mh-title">AI 每日速递<span class="en">Artificial Intelligence · Daily Digest</span></h1>
+    <div class="mh-meta">
+      <span class="date">{{DATE}}</span>
+      <span class="sep">·</span>
+      <span>{{WEEKDAY}}</span>
+      <span class="edition">第 {{EDITION}} 期</span>
+    </div>
+    <p class="mh-intro">{{INTRO}}</p>
+    <div class="stats">
+      <div class="stat"><div class="n">{{N_HEADLINES}}</div><div class="l">今日要闻</div></div>
+      <div class="stat"><div class="n">{{N_COMMUNITY}}</div><div class="l">社区热议</div></div>
+      <div class="stat"><div class="n">{{N_PRODUCTS}}</div><div class="l">产品 / 概念</div></div>
+      <div class="stat"><div class="n">{{N_REPOS}}</div><div class="l">开源热门</div></div>
+    </div>
+  </header>
+
+{{SECTIONS}}
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="foot">
+    <div class="foot-top">
+      <a class="back" href="index.html">← 返回 · 浏览其他日报</a>
+      <span class="made">生成于 {{GENERATED_AT}} · daily-digest skill</span>
+    </div>
+    <p class="disclaimer">
+      本刊由 daily-digest skill 自动汇编：要闻来自 Google News，社区热议来自 Hacker News / Reddit，
+      开源热门来自 GitHub Trending，产品与概念由上述信源综合提炼。摘要为机器辅助整理，链接指向原始信源；
+      如有出入请以原文为准。
+    </p>
+  </footer>
+
+</main>
+<script>
+/* reveal on scroll */
+(function () {
+  var io = new IntersectionObserver(function (es) {
+    es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(function (el) { io.observe(el); });
+}());
+</script>
+</body>
+</html>

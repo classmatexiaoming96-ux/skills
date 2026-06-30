@@ -113,3 +113,9 @@ empty board placeholders.
 ## License
 
 MIT (or whatever the host repo declares).
+
+## Available skills
+
+- [`github-trending-monitor/`](github-trending-monitor/) — Daily GitHub Trending crawler with source-level deep-dive analysis.
+- [`youtube-to-html/`](youtube-to-html/) — YouTube technical video to Chinese long-form GitHub Pages HTML.
+- [`daily-digest/`](daily-digest/) — AI and tech daily digest with scripts, templates, docs, and viewer entrypoint.
