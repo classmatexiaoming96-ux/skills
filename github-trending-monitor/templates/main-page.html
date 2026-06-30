@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>{{PROJECT_NAME}} · {{TAGLINE}} · 源码观测台</title>
+<meta name="description" content="{{OWNER}}/{{REPO}} 源码级深度解析 — {{META_DESCRIPTION}}" />
+<meta property="og:title" content="{{PROJECT_NAME}} · 源码观测台" />
+<meta property="og:description" content="{{META_DESCRIPTION}}" />
+<meta property="og:type" content="article" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,400..900&family=Hanken+Grotesk:wght@300..800&family=JetBrains+Mono:wght@400..700&display=swap" rel="stylesheet" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230a0b0e'/%3E%3Ccircle cx='30' cy='35' r='10' fill='%23e8825a'/%3E%3Ccircle cx='70' cy='35' r='10' fill='%2354d6e0'/%3E%3Ccircle cx='30' cy='70' r='10' fill='%23e9b873'/%3E%3Ccircle cx='70' cy='70' r='10' fill='%237fcf9e'/%3E%3Cpath d='M30 45 V60 M70 45 V60 M40 35 H60 M40 70 H60' stroke='%23e0b07a' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E" />
+<style>
+/* LAYOUT SHELL START — Do NOT edit; copy as-is */
+__LAYOUT_SHELL_CSS__
+/* LAYOUT SHELL END */
+
+/* 项目专属 accent 覆盖（仅改 --star 三件套） */
+:root {
+  --star:       {{STAR}};
+  --star-soft:  {{STAR_SOFT}};
+  --star-deep:  {{STAR_DEEP}};
+}
+</style>
+</head>
+<body>
+
+<!-- ── background layers ─────────────────────────────────────── -->
+<canvas class="bg-stars" id="stars"></canvas>
+<div class="bg-glow"></div>
+<div class="bg-grid"></div>
+<svg class="bg-grain"><filter id="gr"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter><rect width="100%" height="100%" filter="url(#gr)" opacity="0.4"/></svg>
+
+<!-- ── mobile bar ────────────────────────────────────────────── -->
+<div class="mobile-bar">
+  <div class="glyph">{{PROJECT_NAME}}<b>{{PROJECT_ACCENT}}</b></div>
+  <select id="msel" aria-label="跳转章节"></select>
+</div>
+
+<div class="shell">
+
+  <!-- =================== SIDE NAV =================== -->
+  <aside class="nav">
+    <div class="nav-brand">
+      <div class="glyph">{{PROJECT_NAME}}<b>{{PROJECT_ACCENT}}</b></div>
+      <div class="sub">源码级架构解析 · src/</div>
+    </div>
+    <span class="nav-ver">{{LANG}} · {{ECOSYSTEM}}</span>
+    <nav>
+      <ul class="nav-list" id="navlist">
+        <li><a href="#overview"><span class="idx">00</span>概览</a></li>
+        <li><a href="#section-1"><span class="idx">01</span>{{SEC1_TITLE}}</a></li>
+        <li><a href="#section-2"><span class="idx">02</span>{{SEC2_TITLE}}</a></li>
+        <li><a href="#section-3"><span class="idx">03</span>{{SEC3_TITLE}}</a></li>
+        <li><a href="#section-4"><span class="idx">04</span>{{SEC4_TITLE}}</a></li>
+        <li><a href="#section-5"><span class="idx">05</span>{{SEC5_TITLE}}</a></li>
+        <li><a href="#section-6"><span class="idx">06</span>{{SEC6_TITLE}}</a></li>
+      </ul>
+    </nav>
+    <div class="nav-foot">
+      <div>Stars ★{{STARS}} · {{CREATED_AT}}</div>
+      <div><a href="{{REPO_URL}}" target="_blank">{{OWNER}}/{{REPO}}</a></div>
+      <div><a href="../index.html">← 全部分析</a></div>
+    </div>
+  </aside>
+
+  <!-- =================== MAIN =================== -->
+  <main class="main">
+
+    <!-- ── HERO ────────────────────────────────────────────── -->
+    <div class="hero">
+      <div class="hero-grid">
+        <div>
+          <div class="hero-eyebrow">§ 00 · Source-level Observatory</div>
+          <h1 class="hero-title">{{PROJECT_NAME}} <em>{{TAGLINE}}</em></h1>
+          <p class="hero-desc">{{HERO_DESCRIPTION}}</p>
+          <div class="hero-stats">
+            <div class="stat"><div class="stat-num">★ {{STARS}}</div><div class="stat-lbl">GitHub Stars</div></div>
+            <div class="stat"><div class="stat-num">{{LOC}}</div><div class="stat-lbl">LOC</div></div>
+            <div class="stat"><div class="stat-num">{{FILE_COUNT}}</div><div class="stat-lbl">Files</div></div>
+            <div class="stat"><div class="stat-num">{{LAST_COMMIT}}</div><div class="stat-lbl">Last commit</div></div>
+          </div>
+        </div>
+        <div>
+          <!-- 选填：项目架构缩略图 / SVG logo -->
+          {{HERO_ART}}
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 01 OVERVIEW ─────────────────────────────────────── -->
+    <section class="sec" id="overview">
+      <div class="sec-no">§ <b>00</b> · OVERVIEW</div>
+      <h2 class="sec-title">它解决什么，<em>凭什么</em>值得拆</h2>
+      <p>{{OVERVIEW_PARA_1}}</p>
+      <p>{{OVERVIEW_PARA_2}}</p>
+
+      <h3><span class="arr">▸</span>核心数据</h3>
+      <div class="g2">
+        <div class="card">
+          <div class="card-h">架构模式</div>
+          <div class="card-d">{{ARCH_PATTERN}}</div>
+        </div>
+        <div class="card">
+          <div class="card-h">核心抽象</div>
+          <div class="card-d">{{CORE_ABSTRACT}}</div>
+        </div>
+        <div class="card">
+          <div class="card-h">性能/精度数据</div>
+          <div class="card-d">{{PERF_DATA}}</div>
+        </div>
+        <div class="card">
+          <div class="card-h">下游依赖</div>
+          <div class="card-d">{{DOWNSTREAM}}</div>
+        </div>
+      </div>
+
+      <div class="callout">
+        <strong>本文导航</strong> — 6 个章节依次：概述 → 架构图 → 核心模块 → 关键流程 → 测试与验证 → 风险。子页面在每个 H3 末尾以 <code>深度阅读 →</code> 入口展开。
+      </div>
+    </section>
+
+    <!-- ── 02 ARCHITECTURE ─────────────────────────────────── -->
+    <section class="sec" id="section-1">
+      <div class="sec-no">§ <b>01</b> · ARCHITECTURE</div>
+      <h2 class="sec-title">{{SEC1_TITLE}}</h2>
+      <p>{{SEC1_INTRO}}</p>
+
+      <h3><span class="arr">▸</span>系统拓扑</h3>
+      <div class="flow">{{FLOW_DIAGRAM_1}}</div>
+
+      <h3><span class="arr">▸</span>模块清单</h3>
+      <p>{{MODULES_DESC}}</p>
+      <div class="g3">{{MODULE_CARDS}}</div>
+
+      <h3><span class="arr">▸</span>关键数据结构</h3>
+      <div class="code-wrap">
+        <div class="code-bar"><span><span class="src">src/{{KEY_STRUCT_FILE}}</span> · L{{KEY_STRUCT_LINE_START}}-{{KEY_STRUCT_LINE_END}}</span><span>{{LANG}}</span></div>
+        <pre class="code">{{KEY_STRUCT_CODE}}</pre>
+      </div>
+
+      <a class="deep-link" href="{{DEEP_LINK_1}}">深度阅读 · {{DEEP_LINK_1_TITLE}}</a>
+    </section>
+
+    <!-- ── 03 CORE MODULES ─────────────────────────────────── -->
+    <section class="sec" id="section-2">
+      <div class="sec-no">§ <b>02</b> · CORE MODULES</div>
+      <h2 class="sec-title">{{SEC2_TITLE}}</h2>
+
+      <h3><span class="arr">▸</span>{{MODULE_A_TITLE}}</h3>
+      <p>{{MODULE_A_DESC}}</p>
+      <div class="code-wrap">
+        <div class="code-bar"><span><span class="src">src/{{MODULE_A_FILE}}</span> · L{{MODULE_A_LINE_START}}-{{MODULE_A_LINE_END}}</span><span>{{LANG}}</span></div>
+        <pre class="code">{{MODULE_A_CODE}}</pre>
+      </div>
+
+      <h3><span class="arr">▸</span>{{MODULE_B_TITLE}}</h3>
+      <p>{{MODULE_B_DESC}}</p>
+      <div class="code-wrap">
+        <div class="code-bar"><span><span class="src">src/{{MODULE_B_FILE}}</span> · L{{MODULE_B_LINE_START}}-{{MODULE_B_LINE_END}}</span><span>{{LANG}}</span></div>
+        <pre class="code">{{MODULE_B_CODE}}</pre>
+      </div>
+
+      <a class="deep-link" href="{{DEEP_LINK_2}}">深度阅读 · {{DEEP_LINK_2_TITLE}}</a>
+    </section>
+
+    <!-- ── 04 KEY FLOW ─────────────────────────────────────── -->
+    <section class="sec" id="section-3">
+      <div class="sec-no">§ <b>03</b> · KEY FLOW</div>
+      <h2 class="sec-title">{{SEC3_TITLE}}</h2>
+      <p>{{SEC3_INTRO}}</p>
+
+      <h3><span class="arr">▸</span>{{FLOW_A_TITLE}}</h3>
+      <div class="flow">{{FLOW_A_DIAGRAM}}</div>
+
+      <h3><span class="arr">▸</span>{{FLOW_B_TITLE}}</h3>
+      <div class="flow">{{FLOW_B_DIAGRAM}}</div>
+
+      <a class="deep-link" href="{{DEEP_LINK_3}}">深度阅读 · {{DEEP_LINK_3_TITLE}}</a>
+    </section>
+
+    <!-- ── 05 TESTS & VALIDATION ───────────────────────────── -->
+    <section class="sec" id="section-4">
+      <div class="sec-no">§ <b>04</b> · TESTS &amp; VALIDATION</div>
+      <h2 class="sec-title">{{SEC4_TITLE}}</h2>
+      <p>{{SEC4_INTRO}}</p>
+
+      <h3><span class="arr">▸</span>测试覆盖</h3>
+      <p>{{TEST_COVERAGE_DESC}}</p>
+      <div class="code-wrap">
+        <div class="code-bar"><span><span class="src">tests/{{TEST_FILE}}</span> · L{{TEST_LINE_START}}-{{TEST_LINE_END}}</span><span>{{LANG}}</span></div>
+        <pre class="code">{{TEST_CODE}}</pre>
+      </div>
+
+      <h3><span class="arr">▸</span>已知边界 / 失败模式</h3>
+      <ul>{{EDGE_CASES}}</ul>
+    </section>
+
+    <!-- ── 06 HIGHLIGHTS & RISKS ───────────────────────────── -->
+    <section class="sec" id="section-5">
+      <div class="sec-no">§ <b>05</b> · HIGHLIGHTS</div>
+      <h2 class="sec-title">{{SEC5_TITLE}}</h2>
+      <div class="g2">{{HIGHLIGHT_CARDS}}</div>
+    </section>
+
+    <section class="sec" id="section-6">
+      <div class="sec-no">§ <b>06</b> · RISKS &amp; GAPS</div>
+      <h2 class="sec-title">技术亮点之外，<em>别忽略</em>这些</h2>
+      <p>{{RISKS_INTRO}}</p>
+      <div class="g2">{{RISK_CARDS}}</div>
+
+      <div class="callout warn">
+        <strong>诚实记录</strong> — 这部分列的是我在源码里看到、但作者没有明确文档化的限制。读者请按需取舍。
+      </div>
+    </section>
+
+    <div class="foot">
+      <span>Generated · {{DATE}}</span>
+      <span>Source · <a href="{{REPO_URL}}">{{OWNER}}/{{REPO}}</a></span>
+      <span><a href="../index.html">← 返回 Trending 索引</a></span>
+      <span><a href="../{{PROJECT_NAME}}.html">↑ 返回主页面</a></span>
+    </div>
+
+  </main>
+</div>
+
+<!-- ── scroll-spy + mobile select wiring ──────────────────── -->
+<script>
+(() => {
+  const links = document.querySelectorAll('.nav-list a');
+  const map = new Map();
+  links.forEach(a => {
+    const id = a.getAttribute('href').slice(1);
+    const el = document.getElementById(id);
+    if (el) map.set(el, a);
+  });
+  const setActive = (el) => {
+    links.forEach(a => a.classList.remove('active'));
+    if (el) map.get(el).classList.add('active');
+  };
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) setActive(e.target); });
+  }, { rootMargin: '-40% 0px -55% 0px', threshold: 0 });
+  map.forEach((_, el) => obs.observe(el));
+  // mobile select
+  const sel = document.getElementById('msel');
+  if (sel) {
+    links.forEach(a => {
+      const o = document.createElement('option');
+      o.value = a.getAttribute('href');
+      o.textContent = a.textContent.trim();
+      sel.appendChild(o);
+    });
+    sel.addEventListener('change', e => location.href = e.target.value);
+  }
+  // bg stars
+  const canvas = document.getElementById('stars');
+  if (canvas) {
+    const ctx = canvas.getContext('2d');
+    const resize = () => { canvas.width = innerWidth; canvas.height = innerHeight; };
+    resize(); addEventListener('resize', resize);
+    const N = 80;
+    const stars = Array.from({length:N}, () => ({
+      x: Math.random()*canvas.width, y: Math.random()*canvas.height,
+      r: Math.random()*1.4 + 0.2,
+      a: Math.random(), s: Math.random()*0.02 + 0.005
+    }));
+    const tick = () => {
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      stars.forEach(s => {
+        s.a += s.s; if (s.a > 1 || s.a < 0.2) s.s *= -1;
+        ctx.globalAlpha = s.a;
+        ctx.fillStyle = '#f0a585';
+        ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI*2); ctx.fill();
+      });
+      requestAnimationFrame(tick);
+    };
+    tick();
+  }
+})();
+</script>
+</body>
+</html>

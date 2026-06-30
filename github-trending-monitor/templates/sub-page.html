@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>{{TOPIC_TITLE}} · 深度解析 · {{PROJECT_NAME}}</title>
+<meta name="description" content="{{PROJECT_NAME}} {{TOPIC}} 子模块完整解析 — {{META_DESCRIPTION}}" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,400..900&family=Hanken+Grotesk:wght@300..800&family=JetBrains+Mono:wght@400..700&display=swap" rel="stylesheet" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230a0b0e'/%3E%3Ccircle cx='30' cy='35' r='10' fill='%23e8825a'/%3E%3Ccircle cx='70' cy='35' r='10' fill='%2354d6e0'/%3E%3Ccircle cx='30' cy='70' r='10' fill='%23e9b873'/%3E%3Ccircle cx='70' cy='70' r='10' fill='%237fcf9e'/%3E%3Cpath d='M30 45 V60 M70 45 V60 M40 35 H60 M40 70 H60' stroke='%23e0b07a' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E" />
+<style>
+/* LAYOUT SHELL START — Do NOT edit; copy as-is */
+__LAYOUT_SHELL_CSS__
+/* LAYOUT SHELL END */
+
+:root {
+  --star:       {{STAR}};
+  --star-soft:  {{STAR_SOFT}};
+  --star-deep:  {{STAR_DEEP}};
+}
+</style>
+</head>
+<body>
+
+<canvas class="bg-stars" id="stars"></canvas>
+<div class="bg-glow"></div>
+<div class="bg-grid"></div>
+<svg class="bg-grain"><filter id="gr"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter><rect width="100%" height="100%" filter="url(#gr)" opacity="0.4"/></svg>
+
+<div class="mobile-bar">
+  <div class="glyph">{{PROJECT_NAME}}<b>{{PROJECT_ACCENT}}</b></div>
+  <select id="msel" aria-label="跳转章节"></select>
+</div>
+
+<div class="shell">
+  <aside class="nav">
+    <div class="nav-brand">
+      <div class="glyph">{{PROJECT_NAME}}<b>{{PROJECT_ACCENT}}</b></div>
+      <div class="sub">{{TOPIC}} · 深度解析</div>
+    </div>
+    <span class="nav-ver">{{LANG}}</span>
+    <nav>
+      <ul class="nav-list" id="navlist">
+        <li><a href="#intro"><span class="idx">00</span>导入与契约</a></li>
+        <li><a href="#core-impl"><span class="idx">01</span>核心实现</a></li>
+        <li><a href="#flow"><span class="idx">02</span>关键流程</a></li>
+        <li><a href="#edge"><span class="idx">03</span>边界与失败</a></li>
+        <li><a href="#related"><span class="idx">04</span>关联模块</a></li>
+      </ul>
+    </nav>
+    <div class="nav-foot">
+      <div><a href="../{{PROJECT_NAME}}.html">← 返回 {{PROJECT_NAME}} 主页面</a></div>
+      <div><a href="../../index.html">全部分析</a></div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="hero">
+      <div class="hero-eyebrow">§ · Nested detail page</div>
+      <h1 class="hero-title">{{TOPIC_TITLE}} <em>深度解析</em></h1>
+      <p class="hero-desc">{{HERO_DESCRIPTION}}</p>
+    </div>
+
+    <section class="sec" id="intro">
+      <div class="sec-no">§ <b>00</b> · IMPORT CHAIN</div>
+      <h2 class="sec-title">导入链与<em>契约</em></h2>
+      <p>{{INTRO_PARA}}</p>
+      <div class="code-wrap">
+        <div class="code-bar"><span><span class="src">src/{{INTRO_FILE}}</span> · L{{INTRO_LINE_START}}-{{INTRO_LINE_END}}</span><span>{{LANG}}</span></div>
+        <pre class="code">{{INTRO_CODE}}</pre>
+      </div>
+    </section>
+
+    <section class="sec" id="core-impl">
+      <div class="sec-no">§ <b>01</b> · CORE IMPL</div>
+      <h2 class="sec-title">核心实现，<em>逐段</em>拆</h2>
+
+      <h3><span class="arr">▸</span>{{SUB_TOPIC_A}}</h3>
+      <p>{{SUB_TOPIC_A_DESC}}</p>
+      <div class="code-wrap">
+        <div class="code-bar"><span><span class="src">src/{{SUB_TOPIC_A_FILE}}</span> · L{{SUB_TOPIC_A_LINE_START}}-{{SUB_TOPIC_A_LINE_END}}</span><span>{{LANG}}</span></div>
+        <pre class="code">{{SUB_TOPIC_A_CODE}}</pre>
+      </div>
+
+      <h3><span class="arr">▸</span>{{SUB_TOPIC_B}}</h3>
+      <p>{{SUB_TOPIC_B_DESC}}</p>
+      <div class="code-wrap">
+        <div class="code-bar"><span><span class="src">src/{{SUB_TOPIC_B_FILE}}</span> · L{{SUB_TOPIC_B_LINE_START}}-{{SUB_TOPIC_B_LINE_END}}</span><span>{{LANG}}</span></div>
+        <pre class="code">{{SUB_TOPIC_B_CODE}}</pre>
+      </div>
+    </section>
+
+    <section class="sec" id="flow">
+      <div class="sec-no">§ <b>02</b> · KEY FLOW</div>
+      <h2 class="sec-title">关键<em>流程</em></h2>
+      <div class="flow">{{KEY_FLOW_DIAGRAM}}</div>
+      <p>{{FLOW_DESC}}</p>
+    </section>
+
+    <section class="sec" id="edge">
+      <div class="sec-no">§ <b>03</b> · EDGE CASES</div>
+      <h2 class="sec-title">边界 / <em>失败模式</em></h2>
+      <ul>{{EDGE_CASES}}</ul>
+    </section>
+
+    <section class="sec" id="related">
+      <div class="sec-no">§ <b>04</b> · RELATED</div>
+      <h2 class="sec-title">关联<em>模块</em></h2>
+      <div class="g2">{{RELATED_CARDS}}</div>
+    </section>
+
+    <div class="foot">
+      <span>Sub-page · {{DATE}}</span>
+      <span>Source · <a href="{{REPO_URL}}">{{OWNER}}/{{REPO}}</a></span>
+      <span><a href="../{{PROJECT_NAME}}.html">↑ {{PROJECT_NAME}} 主页面</a></span>
+    </div>
+  </main>
+</div>
+
+<script>
+(() => {
+  const links = document.querySelectorAll('.nav-list a');
+  const map = new Map();
+  links.forEach(a => {
+    const id = a.getAttribute('href').slice(1);
+    const el = document.getElementById(id);
+    if (el) map.set(el, a);
+  });
+  const setActive = (el) => {
+    links.forEach(a => a.classList.remove('active'));
+    if (el) map.get(el).classList.add('active');
+  };
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) setActive(e.target); });
+  }, { rootMargin: '-40% 0px -55% 0px', threshold: 0 });
+  map.forEach((_, el) => obs.observe(el));
+  const sel = document.getElementById('msel');
+  if (sel) {
+    links.forEach(a => {
+      const o = document.createElement('option');
+      o.value = a.getAttribute('href');
+      o.textContent = a.textContent.trim();
+      sel.appendChild(o);
+    });
+    sel.addEventListener('change', e => location.href = e.target.value);
+  }
+  const canvas = document.getElementById('stars');
+  if (canvas) {
+    const ctx = canvas.getContext('2d');
+    const resize = () => { canvas.width = innerWidth; canvas.height = innerHeight; };
+    resize(); addEventListener('resize', resize);
+    const N = 60;
+    const stars = Array.from({length:N}, () => ({
+      x: Math.random()*canvas.width, y: Math.random()*canvas.height,
+      r: Math.random()*1.4 + 0.2,
+      a: Math.random(), s: Math.random()*0.02 + 0.005
+    }));
+    const tick = () => {
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      stars.forEach(s => {
+        s.a += s.s; if (s.a > 1 || s.a < 0.2) s.s *= -1;
+        ctx.globalAlpha = s.a;
+        ctx.fillStyle = '#f0a585';
+        ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI*2); ctx.fill();
+      });
+      requestAnimationFrame(tick);
+    };
+    tick();
+  }
+})();
+</script>
+</body>
+</html>

@@ -18,6 +18,13 @@ triggers:
 ## 生成流程
 每个项目 30-60 分钟：clone → 读源码 → 主页面 → 2-4 子页面 → 质量校验 → 部署
 
+## 本地模板
+- 主页面模板：`templates/main-page.html`
+- 子页面模板：`templates/sub-page.html`
+- 共用样式骨架：`templates/layout-shell.css`
+
+生成新页面时只引用本 skill 目录内的 `templates/` 文件，不依赖外部模板 skill 路径。
+
 ## 质量硬约束
 - 主页面：源码引用≥8、行号引用≥50、H3≥10、深度阅读入口≥2
 - 子页面：≥2个，每个≥20行号+≥3 H3

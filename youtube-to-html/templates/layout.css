@@ -1,0 +1,43 @@
+:root {
+  --bg-primary: #0a0a0f;
+  --bg-secondary: #16161f;
+  --text-primary: #e2e8f0;
+  --accent: #63b3ed;
+  --accent-hover: #4299e1;
+  --card-bg: rgba(255,255,255,0.05);
+  --card-border: rgba(255,255,255,0.08);
+}
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: Inter, -apple-system, sans-serif;
+}
+button, .btn {
+  background: transparent;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+button:hover, .btn:hover {
+  background: var(--accent);
+  color: var(--bg-primary);
+}
+.hero {
+  background: var(--bg-secondary);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 2rem;
+  backdrop-filter: blur(12px);
+  margin-bottom: 2rem;
+}
+.content-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  backdrop-filter: blur(12px);
+}
