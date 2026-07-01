@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-github-trending-page-template · quality-gate
+github-trending-monitor · quality-gate
 
 校验新生成的页面是否满足质量硬约束。
 
@@ -214,6 +214,8 @@ def main():
     if args.json:
         import json
         print(json.dumps(result, indent=2, ensure_ascii=False))
+        if not result['passed']:
+            sys.exit(1)
     else:
         print(f'=== Quality Gate · {project} ===\n')
         if main_result['exists']:
