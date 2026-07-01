@@ -13,7 +13,9 @@ triggers:
 
 为 YouTube 技术视频生成一个独立 dark-themed HTML 页面，保存到 GitHub Pages 仓库并推送到线上去。
 
-**One task = one new VIDEO_ID.html 文件。禁止修改任何已存在的 .html 文件。**
+**One task 完整定义 = 创建 VIDEO_ID.html + 追加 index.html 卡片 + push + 验证线上主页含新入口。** 缺任何一步都视为任务失败（仅子页面推送成功但主页没入口 = 用户感知不到 = 失败）。
+
+**允许的修改白名单**：仅允许在 `index.html` 中追加新视频卡片。其它所有已存在的 .html 文件禁止修改（详见 §6 与 §10）。
 
 GitHub Pages: `https://classmatexiaoming96-ux.github.io/youtube_course/`
 仓库: `https://github.com/classmatexiaoming96-ux/classmatexiaoming96-ux.github.io`
@@ -195,9 +197,15 @@ git diff --stat youtube_course/  # 验证只有 VIDEO_ID.html
 
 ---
 
-## 6. Update index.html (add new video card)
+## 6. Update index.html (add new video card) — ⚠️ 必做步骤
+
+**这一步是硬约束，不是可选项。** 历史上多次 cron 任务跑完子页面 + commit + push 后，session 因为达到工具调用上限而中断，**漏掉 index.html 卡片 append** —— 后果是子页面在线上能访问，但用户在主页 `https://classmatexiaoming96-ux.github.io/youtube_course/` 看不到入口，等于任务失败。
+
+**执行顺序**：§5（生成 VIDEO_ID.html）→ **本节（append index.html）**→ §7（commit push）。中间不要插入其他无关操作。
 
 在 `git diff` 验证通过后，把新视频卡片追加到 index.html 的 video-cards 区域：
+
+> ⚠️ **`sed` 模板里的 `VIDEO_ID` 必须替换为真实的 11 位 ID**（如 `BaXTos7B1vY`），不要把字面量 `VIDEO_ID` 写进 index.html。
 
 ```bash
 # 用 sed 在 </section> 闭合标签前插入新卡片
@@ -229,18 +237,37 @@ git push origin main
 
 ## 8. Deployment verification
 
+**Fail-fast 验证**：以下 4 项全部必须通过，任何一项失败都视为任务未完成，必须补完再回报。
+
 ```bash
 # 等待 ~2 分钟 CDN 生效
 sleep 120
 
-# 检查 index 包含新视频
+# ✅ 1. 主页包含新视频（最关键 — 这条不通过 = 任务失败）
 curl -s "https://classmatexiaoming96-ux.github.io/youtube_course/" | grep -o "VIDEO_ID" | head -3
+# 期望：至少 1 个匹配
 
-# 检查新页面本身
+# ✅ 2. 新页面本身可访问
 curl -sI "https://classmatexiaoming96-ux.github.io/youtube_course/VIDEO_ID.html"
+# 期望：HTTP 200
 
-# 检查深色主题
+# ✅ 3. 新页面深色主题
 curl -s "https://classmatexiaoming96-ux.github.io/youtube_course/VIDEO_ID.html" | grep -c "0a0a0f"
+# 期望：≥ 1
+
+# ✅ 4. 本地 index.html 已包含新 ID（推送前就应验证）
+grep -c "VIDEO_ID" <workdir>/usersite/youtube_course/index.html
+# 期望：≥ 1
+```
+
+**如果验证 1 不通过**（主页不含新 ID），立即执行补救：
+```bash
+# 在 index.html 末尾追加卡片（参考 §6 的 sed 模板）
+cd <workdir>/usersite
+git add youtube_course/index.html
+git commit -m "fix(youtube): append VIDEO_ID card to index"
+git push origin main
+# 再次 sleep 120 + 重新跑验证 1
 ```
 
 ---
@@ -283,3 +310,4 @@ curl -s "https://classmatexiaoming96-ux.github.io/youtube_course/VIDEO_ID.html" 
 | **VTT 时间戳未清洗** — `<v Speaker>` 标签未移除 | Codex 理解混乱，内容质量下降 | 始终用 `scripts/vtt_cleaner.py` 处理后再喂给 Codex |
 | **Cookies 过期** — youtube_cookies.txt 超过 30 天 | 字幕下载失败 | 从浏览器重新导出 cookies 文件 |
 | **长视频 VTT** — 单文件 > 8000 chars 导致 CodeGen 混乱 | 内容截断或乱码 | 始终用 chunk 脚本分块 |
+| **index.html 卡片 append 跳过** — cron 跑完子页面 + commit 后 session 工具调用达上限 | 主页没入口，用户感知不到新视频；汇报里说"部署成功"误导 | 把"index.html append"列为必做步骤写在 prompt 顶部；verification 阶段 grep 主页含新 ID 作为 fail-fast 检查 |
