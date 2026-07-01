@@ -1,6 +1,6 @@
 ---
 name: daily-digest
-description: 每天自动汇编一期「AI 每日速递」深色主题日报 HTML，并部署到 GitHub Pages。内容源覆盖 Google News（AI 要闻）、Hacker News / Reddit（社区热议，替代 X）、AI 产品与概念热点、GitHub Trending（开源热门）。产出 ~/.hermes/daily-digest/{date}.html，自带纯前端日历翻阅历史刊期，并在 GitHub Trending 与 YouTube 页面挂入口。
+description: 每天自动汇编一期「AI 每日速递」深色主题日报 HTML，并部署到 GitHub Pages。内容源覆盖 Google News（AI 要闻）、Hacker News + Reddit（社区热议）、X/Twitter via Nitter（AI trending）、GitHub Trending（开源热门）。产出 ~/.hermes/daily-digest/{date}.html，自带纯前端日历翻阅历史刊期。
 triggers:
   - "生成今天的 AI 日报"
   - "daily digest / 每日速递"
@@ -61,11 +61,12 @@ python3 scripts/prefetch.py --date "$(date +%F)" \
 | `hacker_news` | HN Algolia API（近 36h、points>40，AI 关键词过滤） | ② 社区热议 |
 | `reddit` | r/MachineLearning · LocalLLaMA · artificial · OpenAI · singularity 的 `top?t=day` | ② 社区热议 |
 | `show_hn` | HN Show HN（近 3 天，AI 关键词） | ③ 产品 · 概念 |
-| `github` | github.com/trending 抓取 +（AI 命中为空时）Search API 兜底 | ④ 开源热门 |
+| `x_twitter` | Nitter HTML 解析（`nitter.tiekoetter.com`，#AI 搜索） | ② 社区热议  |
+| `github` | `github.com/trending` 抓取 +（AI 命中为空时）Search API 兜底 | ④ 开源热门 |
 
-> **代理**：开发机直连 Google News / Reddit / GitHub 常超时。优先 `--proxy http://127.0.0.1:7890`。
+> **代理**：开发机直连 Google News / Reddit / GitHub / Nitter 常超时。优先 `--proxy http://127.0.0.1:7890`。
 > 每个信源都包 try/except，单源失败不中断；结尾 summary 会标出哪个桶 `⚠ EMPTY`，据此决定是否补抓。
-> X（Twitter）按需求用 **HN + Reddit 替代**，不直接抓 X。
+> X（Twitter）通过 Nitter tiekoetter.com 实例走 HTML 解析获取，不再依赖不稳定的 Nitter RSS 或 X API key（已内置 curl fallback 绕过 Cloudflare 验证）。
 
 ---
 
