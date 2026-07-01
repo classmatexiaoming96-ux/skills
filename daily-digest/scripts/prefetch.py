@@ -59,13 +59,39 @@ def setup_http(proxy):
 
 
 def get(url, accept=None, timeout=25):
+    """Fetch a URL.  Falls back to `curl` subprocess if urllib is Cloudflare-blocked."""
     req = urllib.request.Request(url, headers={
         "User-Agent": UA,
         "Accept": accept or "*/*",
         "Accept-Language": "en-US,en;q=0.9,zh-CN;q=0.8",
     })
-    with _opener.open(req, timeout=timeout) as r:
-        return r.read().decode("utf-8", "replace")
+    try:
+        with _opener.open(req, timeout=timeout) as r:
+            raw = r.read().decode("utf-8", "replace")
+        if "not a bot" in raw.lower() or "captcha" in raw.lower():
+            print("    ! urllib blocked by Cloudflare, falling back to curl", file=sys.stderr)
+            return _get_via_curl(url, timeout)
+        return raw
+    except Exception:
+        print("    ! urllib failed, falling back to curl", file=sys.stderr)
+        return _get_via_curl(url, timeout)
+
+
+def _get_via_curl(url, timeout=25):
+    """Fetch via curl subprocess (bypasses Cloudflare)."""
+    import subprocess
+    cmd = ["curl", "-sL", "--max-time", str(timeout), url]
+    proxy = os.environ.get("HTTPS_PROXY") or os.environ.get("https_proxy")
+    if proxy:
+        cmd += ["--proxy", proxy]
+    try:
+        r = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout + 5)
+        if r.returncode == 0 and r.stdout:
+            return r.stdout
+        print(f"    ! curl failed (exit {r.returncode}): {r.stderr[:120]}", file=sys.stderr)
+    except Exception as e:
+        print(f"    ! curl error: {e}", file=sys.stderr)
+    return ""
 
 
 def get_json(url, **kw):
@@ -259,6 +285,52 @@ def fetch_github_search():
     return out
 
 
+# ---------------------------------------------------------------- X (Twitter) via Nitter
+NITTER_URL = "https://nitter.tiekoetter.com"
+
+
+def fetch_nitter_html():
+    """Scrape X/Twitter trending via Nitter HTML (search for #AI)."""
+    url = (f"{NITTER_URL}/search?q=%23AI+OR+%23ArtificialIntelligence"
+           "+OR+%23MachineLearning&f=tweets")
+    try:
+        html = get(url, accept="text/html")
+    except Exception as e:
+        print(f"    ! nitter failed: {e}", file=sys.stderr)
+        return []
+    if not html:
+        return []
+
+    # Parse tweets from HTML
+    contents = re.findall(
+        r'class="tweet-content[^"]*"[^>]*>(.*?)</(?:div|span)>',
+        html, re.DOTALL
+    )
+    usernames = re.findall(
+        r'class="username[^"]*"[^>]*>@*([^<]+)', html
+    )
+    links = re.findall(
+        r'class="tweet-link[^"]*"\s+href="([^"]+)"', html
+    )
+
+    items = []
+    for i, c in enumerate(contents[:15]):
+        text = re.sub(r"<[^>]+>", "", c).strip()
+        if not text:
+            continue
+        user = usernames[i].strip() if i < len(usernames) else ""
+        link = links[i] if i < len(links) else ""
+        if link and link.startswith("/"):
+            link = NITTER_URL + link
+        items.append({
+            "title": text[:200],
+            "url": link,
+            "author": f"@{user}",
+            "platform": "X (Twitter)",
+        })
+    return items
+
+
 # ---------------------------------------------------------------- main
 def main():
     ap = argparse.ArgumentParser()
@@ -285,6 +357,9 @@ def main():
     if not any(r["ai_match"] for r in trending):
         trending += fetch_github_search()
     bundle["github"] = trending
+
+    print("  → x/twitter (nitter)", file=sys.stderr)
+    bundle["x_twitter"] = fetch_nitter_html()
 
     os.makedirs(args.out, exist_ok=True)
     out_path = os.path.join(args.out, f"{args.date}.json")
