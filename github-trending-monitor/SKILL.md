@@ -162,6 +162,24 @@ quality_gate 初检 -> append index.html -> 本地 grep -> diff 范围检查 -> 
 | 子页面 CSS vars 一致 | 不适用 | 必须通过 | 子页面缺少主页面关键 CSS vars 会失败 |
 | `index.html` 项目卡片 | 必须存在 | 不适用 | 聚合页无入口会失败 |
 
+## 评分机制（100 分制）
+
+`quality_gate.py` 在 PASS/FAIL 之外会输出 100 分制评分；新页面目标分数 ≥ 90 (A)。评分只用于排序和可读性，不替代硬约束失败检测。
+
+7 个加权维度：
+
+- 基础源码门槛：30 分，承载行号引用等基础深度要求。
+- 真实代码块 `code_wraps`：15 分，按实际数量 / 阈值折算，主页面阈值 6，子页面阈值 3。
+- 独立讲解段落 `explanation_paragraphs`：15 分，主页面阈值 6，子页面阈值 3。
+- 讲解密度 `explanation_ratio`：20 分，按比例折算；存在 `path:NN` 且低于 30% 时额外扣 20 分。
+- H3 结构：5 分，主页面阈值 10，子页面阈值 3。
+- 深度阅读入口：5 分，主页面至少 2 个；子页面视为不适用。
+- layout shell 与 index 卡片：各 5 分，缺 layout 锚点、旧设计系统或缺主页卡片都会扣分。
+
+堆砌段是重罪：`bulk_line_piles` 每处扣 15 分，10 处以上直接 0 分。opentag 这类堆代码反典型会自动落到 60 分以下（等级 D/F）。
+
+等级映射：90-100 A（优秀），80-89 B（良好），70-79 C（及格），60-69 D（勉强），0-59 F（不及格，反典型）。
+
 ```bash
 cd <repo-path>
 python3 <skill-dir>/scripts/quality_gate.py {project} --json
@@ -276,6 +294,7 @@ grep -n "{project}.html" index.html
 - 每个 `path:NN` 引用前后 200 字符内必须有 ≥30 字符的中文/英文讲解；主页讲解密度 ≥70%、子页面讲解密度 ≥60% 是硬指标。
 - 主页必须有 ≥6 个独立讲解段落，子页面必须有 ≥3 个独立讲解段落；独立讲解段落指 ≥100 个中英文字符且包含 `path:NN` 引用的段落。
 - 必须让每个主页面包含至少 1 个 mermaid 图或等价 architecture flow，且至少 2 个子页面入口。
+- 新页面目标分数 ≥ 90 (A)；低于 A 时先补讲解、代码块和结构，不要只追求 PASS。
 - quality_gate 失败必须修复，不允许用“差一点就过了”作为完成标准。
 - `index.html` 新卡片必须在 commit/push 前追加并本地 grep 通过。
 - 推送后线上主页必须 grep 到 `{project}.html`，否则视为任务失败。

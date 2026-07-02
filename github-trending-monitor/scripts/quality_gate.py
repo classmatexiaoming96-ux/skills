@@ -20,6 +20,8 @@ LAYOUT_ANCHORS = ("--ink:", "--panel:", "--star:", "--ease:", ".shell{", ".nav{"
 KEY_CSS_VARS = {"ink", "panel", "star", "ease", "mono", "sans", "serif"}
 MIN_MAIN_CODE_WRAPS = 6
 MIN_CHILD_CODE_WRAPS = 3
+BASE_SCORE = 30
+LOW_EXPLANATION_RATIO = 0.30
 SOURCE_REF_RE = re.compile(
     r"(?:src|lib|packages?|cmd|internal)/[a-zA-Z0-9_/.\-]+\."
     r"(?:ts|js|tsx|jsx|py|go|rs|java|kt|swift)"
@@ -69,6 +71,7 @@ class GateResult:
     sub_pages: dict
     index: dict
     pages: list[PageMetrics]
+    score: dict
     all_errors: list[str]
     warnings: list[str]
 
@@ -164,6 +167,123 @@ def count_explanation_paragraphs(content: str) -> int:
 
 def bulk_line_pile_count(content: str) -> int:
     return len(BULK_LINE_PILE_RE.findall(content))
+
+
+def score_grade(score: float) -> str:
+    if score >= 90:
+        return "A"
+    if score >= 80:
+        return "B"
+    if score >= 70:
+        return "C"
+    if score >= 60:
+        return "D"
+    return "F"
+
+
+def score_ratio(actual: int | float, threshold: int | float) -> float:
+    if threshold <= 0:
+        return 1.0
+    return min(float(actual) / float(threshold), 1.0)
+
+
+def compute_score(
+    metrics: PageMetrics,
+    *,
+    deep_links: int | None = None,
+    index_card_ok: bool | None = None,
+) -> dict:
+    """Return a simple 100-point score without changing PASS/FAIL checks."""
+    if metrics.bulk_line_piles >= 10:
+        return {
+            "path": metrics.path,
+            "score": 0,
+            "grade": "F",
+            "penalties": {
+                "bulk_line_piles": metrics.bulk_line_piles * 15,
+                "low_explanation_ratio": (
+                    20
+                    if metrics.code_refs > 0 and metrics.explanation_ratio < LOW_EXPLANATION_RATIO
+                    else 0
+                ),
+            },
+        }
+
+    min_explanation_paragraphs = 6 if metrics.page_type == "main" else 3
+    min_h3 = 10 if metrics.page_type == "main" else 3
+    min_deep_links = 2 if metrics.page_type == "main" else 0
+
+    code_score = 15 * score_ratio(metrics.code_wraps, metrics.min_code_wraps)
+    explanation_paragraph_score = 15 * score_ratio(
+        metrics.explanation_paragraphs, min_explanation_paragraphs
+    )
+    explanation_ratio_score = 20 * max(0.0, min(metrics.explanation_ratio, 1.0))
+    h3_score = 5 * score_ratio(metrics.h3_count, min_h3)
+    deep_score = 5 * score_ratio(deep_links or 0, min_deep_links)
+    layout_score = 5 if not metrics.layout_missing and not metrics.banned_design else 0
+    index_score = 5 if index_card_ok is not False else 0
+
+    bulk_penalty = metrics.bulk_line_piles * 15
+    low_ratio_penalty = (
+        20 if metrics.code_refs > 0 and metrics.explanation_ratio < LOW_EXPLANATION_RATIO else 0
+    )
+
+    raw_score = (
+        BASE_SCORE
+        + code_score
+        + explanation_paragraph_score
+        + explanation_ratio_score
+        + h3_score
+        + deep_score
+        + layout_score
+        + index_score
+        - bulk_penalty
+        - low_ratio_penalty
+    )
+    final_score = int(round(max(0, min(100, raw_score))))
+
+    return {
+        "path": metrics.path,
+        "score": final_score,
+        "grade": score_grade(final_score),
+        "components": {
+            "base": BASE_SCORE,
+            "code_wraps": round(code_score, 1),
+            "explanation_paragraphs": round(explanation_paragraph_score, 1),
+            "explanation_ratio": round(explanation_ratio_score, 1),
+            "h3_count": round(h3_score, 1),
+            "deep_links": round(deep_score, 1),
+            "layout_shell": layout_score,
+            "index_card": index_score,
+        },
+        "penalties": {
+            "bulk_line_piles": bulk_penalty,
+            "low_explanation_ratio": low_ratio_penalty,
+        },
+    }
+
+
+def compute_project_score(result: GateResult) -> dict:
+    pages: list[dict] = []
+    main_deep_links = result.main_page.get("deep_links")
+    index_card_ok = result.index.get("has_card")
+    for metrics in result.pages:
+        if metrics.page_type == "main":
+            page_score = compute_score(metrics, deep_links=main_deep_links, index_card_ok=index_card_ok)
+        else:
+            page_score = compute_score(metrics, deep_links=None, index_card_ok=None)
+        pages.append(page_score)
+
+    max_score = len(pages) * 100
+    total = sum(page["score"] for page in pages)
+    average = int(round((total / max_score) * 100)) if max_score else 0
+    return {
+        "total": total,
+        "max": max_score,
+        "average": average,
+        "grade": score_grade(average),
+        "pages": pages,
+    }
 
 
 def verify_line_numbers(content: str, sources_dir: Path) -> list[str]:
@@ -396,16 +516,19 @@ def evaluate_project(root: Path, project: str, sources_dir: Path | None = None) 
     warnings = main_warnings + sub_warnings + index_result.get("warnings", [])
     pages = ([main_metrics] if main_metrics else []) + sub_metrics
 
-    return GateResult(
+    result = GateResult(
         project=project,
         passed=not all_errors,
         main_page=main_result,
         sub_pages=sub_result,
         index=index_result,
         pages=pages,
+        score={},
         all_errors=all_errors,
         warnings=warnings,
     )
+    result.score = compute_project_score(result)
+    return result
 
 
 def print_text(result: GateResult) -> None:
@@ -434,6 +557,16 @@ def print_text(result: GateResult) -> None:
         )
 
     print(f"\nindex.html · {'包含卡片' if result.index.get('has_card') else '缺卡片'}")
+
+    if result.score.get("pages"):
+        print("\n=== 评分 ===")
+        for page_score in result.score["pages"]:
+            print(f"{page_score['path']}: {page_score['score']} 分 ({page_score['grade']})")
+        print(
+            f"\n总分：{result.score['total']} / {result.score['max']} "
+            f"({result.score['average']}%)"
+        )
+        print(f"等级：{result.score['grade']}")
 
     if result.all_errors:
         print(f"\nFAIL · {len(result.all_errors)} 个错误:")
