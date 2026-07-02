@@ -51,6 +51,25 @@ def test_qwen_agentworld_scores_at_least_90():
     assert result.score["grade"] == "A"
 
 
+def test_main_page_score_below_60_fails_project(monkeypatch):
+    original_compute_score = quality_gate.compute_score
+
+    def low_main_score(metrics, **kwargs):
+        score = original_compute_score(metrics, **kwargs)
+        if metrics.page_type == "main":
+            score = dict(score)
+            score["score"] = 59
+            score["grade"] = "F"
+        return score
+
+    monkeypatch.setattr(quality_gate, "compute_score", low_main_score)
+
+    result = quality_gate.evaluate_project(PAGES_ROOT, "qwen-agentworld")
+
+    assert not result.ok
+    assert any("主页面评分 59 < 60" in error for error in result.errors)
+
+
 def test_compute_score_clamps_to_zero_for_bulk_piles():
     metrics = page_metric(
         code_wraps=0,

@@ -528,6 +528,13 @@ def evaluate_project(root: Path, project: str, sources_dir: Path | None = None) 
         warnings=warnings,
     )
     result.score = compute_project_score(result)
+    main_score = next(
+        (page_score for page_score in result.score.get("pages", []) if page_score.get("path") == f"{project}.html"),
+        None,
+    )
+    if main_score and main_score["score"] < 60:
+        result.all_errors.append(f"{project}.html 主页面评分 {main_score['score']} < 60")
+        result.passed = False
     return result
 
 
