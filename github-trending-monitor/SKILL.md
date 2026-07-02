@@ -146,6 +146,21 @@ quality_gate 初检 -> append index.html -> 本地 grep -> diff 范围检查 -> 
 
 质量门禁必须 exit 0；失败时修复后重跑，不要绕过。如果此时 `index.html` 还没追加卡片，quality gate 会因为第 10 项失败。先完成卡片 append，再重跑。
 
+质量硬约束：
+
+| 规则 | 主页面 | 子页面 | 失败/告警含义 |
+|---|---:|---:|---|
+| layout shell 锚点 | 必须齐全 | 必须齐全 | `--ink/--panel/--star/--ease/.shell{/.nav{/.bg-stars` 缺失会失败 |
+| 旧设计系统禁用 | 必须通过 | 必须通过 | `--bg-card/--bg-elev` B 系或 `--glow-amber` A 系混入会失败 |
+| H3 数量 | ≥ 10 | ≥ 3 | 章节深度不足会失败 |
+| 深度阅读入口 | ≥ 2 | 不要求 | 主页面缺少子页面入口会失败 |
+| 行号引用 | ≥ 50 | ≥ 20 | 真实源码引用不足会失败 |
+| 真实代码块 `code_wraps` | ≥ 4 | ≥ 3 | `<div class="code-wrap">` 源码片段不足会失败 |
+| 批量行号堆砌 `bulk_line_piles` | 0 | 0 | ≥15 个连续 `<code>path:NN</code>` 分隔符堆叠会失败 |
+| 讲解密度 `low_explanation_refs` | 软告警 | 软告警 | `path:NN` 前后 200 字符内讲解少于 30 个中英文字符会告警 |
+| 子页面 CSS vars 一致 | 不适用 | 必须通过 | 子页面缺少主页面关键 CSS vars 会失败 |
+| `index.html` 项目卡片 | 必须存在 | 不适用 | 聚合页无入口会失败 |
+
 ```bash
 cd <repo-path>
 python3 <skill-dir>/scripts/quality_gate.py {project} --json
@@ -249,6 +264,9 @@ grep -n "{project}.html" index.html
 - 禁止重建历史页面或批量格式化现有 HTML。
 - 禁止让 `--bg-card`、`--bg-elev` 或 `--glow-amber` 主导设计系统；模板色板以 `--ink / --panel / --star` 为准。
 - 必须为每个代码块使用 `<span class="ln">` 标注真实行号，行号要能对上源码。
+- 必须使用真实源码片段：主页面至少 4 个 `<div class="code-wrap">`，每个子页面至少 3 个。
+- 禁止批量行号堆砌段（≥15 个连续 `<code>path:NN</code>` 分隔符）。
+- 每个 `path:NN` 引用前后 200 字符内必须有 ≥30 字符的中文/英文讲解（软警告）。
 - 必须让每个主页面包含至少 1 个 mermaid 图或等价 architecture flow，且至少 2 个子页面入口。
 - quality_gate 失败必须修复，不允许用“差一点就过了”作为完成标准。
 - `index.html` 新卡片必须在 commit/push 前追加并本地 grep 通过。
@@ -264,6 +282,9 @@ grep -n "{project}.html" index.html
 - 源码分析不出亮点：跳过该 repo，并记录“源码层亮点不足”。
 - 页面生成超过 90 分钟：优先完成主页面和至少 2 个子页面；如果收尾预算不足，先停内容扩展，完成 `index.html` append 与部署验证。
 - quality_gate 失败：读取 JSON 中的失败指标，针对源码引用、行号、H3、子页面、layout shell 锚点、index 卡片逐项修复后重跑。
+- `真实代码块数 N < M`：补充真实源码摘录，使用 `<div class="code-wrap">` 包裹，行号必须来自当前源码快照。
+- `命中批量行号堆砌段`：删除或拆散连续行号清单，把引用改写到逐段解释和真实代码块中。
+- `讲解密度不足的 path:NN 引用`：这是软告警；优先在引用前后补足源码意图、调用关系或设计取舍说明，避免只堆文件名行号。
 - `git push` 失败：不要泄露 token；只报告 PAT 可能失效、权限不足或远端有新提交，并说明需要 rebase 或更新凭据。
 - 线上主页 grep 失败：按下面的失败补救流程处理，不要汇报成功。
 
