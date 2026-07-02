@@ -18,17 +18,25 @@ from typing import Iterable
 
 LAYOUT_ANCHORS = ("--ink:", "--panel:", "--star:", "--ease:", ".shell{", ".nav{", ".bg-stars")
 KEY_CSS_VARS = {"ink", "panel", "star", "ease", "mono", "sans", "serif"}
-MIN_MAIN_CODE_WRAPS = 4
+MIN_MAIN_CODE_WRAPS = 6
 MIN_CHILD_CODE_WRAPS = 3
 SOURCE_REF_RE = re.compile(
     r"(?:src|lib|packages?|cmd|internal)/[a-zA-Z0-9_/.\-]+\."
     r"(?:ts|js|tsx|jsx|py|go|rs|java|kt|swift)"
 )
+SOURCE_PATH_PATTERN = (
+    r"(?:src|sources?|lib|packages?|cmd|internal|app|server|client|tests?|scripts|frontend|backend|core|eval|agents?)/"
+    r"[a-zA-Z0-9_/.\-]+\.(?:ts|js|tsx|jsx|py|go|rs|java|kt|swift|md)"
+)
 LINE_REF_RE = re.compile(r"(?<![\d/]):(\d{2,4})(?![\d])")
-CODE_REF_RE = re.compile(r"<code>[^<]+:\d+</code>")
-BULK_LINE_PILE_RE = re.compile(r"(?:<code>[^<]+:[0-9]+</code>[·、,\s]+){15,}")
-CODE_WRAP_BLOCK_RE = re.compile(r'<div class="code-wrap".*?</div>', re.DOTALL)
-SOURCE_INDEX_PARA_RE = re.compile(r"<p[^>]*>[^<]*(?:源码索引|源文件地图).*?</p>", re.DOTALL)
+PATH_LINE_REF_RE = re.compile(rf"(?<![\w./-]){SOURCE_PATH_PATTERN}:\d{{1,5}}")
+CODE_REF_RE = re.compile(rf"<code>{SOURCE_PATH_PATTERN}:\d{{1,5}}</code>")
+BULK_LINE_PILE_RE = re.compile(
+    rf"(?:<code>{SOURCE_PATH_PATTERN}:[0-9]+</code>[·、,，;；\s]+){{7,}}"
+    rf"<code>{SOURCE_PATH_PATTERN}:[0-9]+</code>"
+)
+PATH_LINE_REF_PARSE_RE = re.compile(rf"(?<![\w./-])({SOURCE_PATH_PATTERN}):(\d{{1,5}})")
+PARAGRAPH_RE = re.compile(r"<p\b[^>]*>.*?</p>", re.DOTALL | re.IGNORECASE)
 TAG_RE = re.compile(r"<[^>]+>")
 REF_TEXT_RE = re.compile(r"[\w./-]+:\d+")
 EXPLANATION_CHAR_RE = re.compile(r"[A-Za-z\u4e00-\u9fff]")
@@ -46,6 +54,8 @@ class PageMetrics:
     bulk_line_piles: int
     code_refs: int
     low_explanation_refs: int
+    explanation_ratio: float
+    explanation_paragraphs: int
     h3_count: int
     layout_missing: list[str]
     banned_design: list[str]
@@ -61,6 +71,14 @@ class GateResult:
     pages: list[PageMetrics]
     all_errors: list[str]
     warnings: list[str]
+
+    @property
+    def ok(self) -> bool:
+        return self.passed
+
+    @property
+    def errors(self) -> list[str]:
+        return self.all_errors
 
 
 def read_text(path: Path) -> str:
@@ -112,7 +130,7 @@ def strip_html_for_explanation(fragment: str) -> str:
 
 def low_explanation_count(content: str) -> int:
     low = 0
-    for match in CODE_REF_RE.finditer(content):
+    for match in PATH_LINE_REF_RE.finditer(content):
         start = max(0, match.start() - 200)
         end = min(len(content), match.end() + 200)
         nearby_text = strip_html_for_explanation(content[start:end])
@@ -121,10 +139,55 @@ def low_explanation_count(content: str) -> int:
     return low
 
 
+def explanation_ratio(content: str) -> float:
+    code_refs = len(PATH_LINE_REF_RE.findall(content))
+    if not code_refs:
+        return 0.0
+    explained_refs = code_refs - low_explanation_count(content)
+    return explained_refs / code_refs
+
+
+def count_explanation_paragraphs(content: str) -> int:
+    blocks = PARAGRAPH_RE.findall(content)
+    if not blocks:
+        blocks = [part for part in re.split(r"\n\s*\n+", content) if part.strip()]
+
+    count = 0
+    for block in blocks:
+        if not PATH_LINE_REF_RE.search(block):
+            continue
+        text = TAG_RE.sub(" ", block)
+        if len(EXPLANATION_CHAR_RE.findall(text)) >= 100:
+            count += 1
+    return count
+
+
 def bulk_line_pile_count(content: str) -> int:
-    scan = CODE_WRAP_BLOCK_RE.sub(" ", content)
-    scan = SOURCE_INDEX_PARA_RE.sub(" ", scan)
-    return len(BULK_LINE_PILE_RE.findall(scan))
+    return len(BULK_LINE_PILE_RE.findall(content))
+
+
+def verify_line_numbers(content: str, sources_dir: Path) -> list[str]:
+    errors: list[str] = []
+    seen: set[tuple[str, int]] = set()
+    for ref_path, line_text in PATH_LINE_REF_PARSE_RE.findall(content):
+        line_no = int(line_text)
+        key = (ref_path, line_no)
+        if key in seen:
+            continue
+        seen.add(key)
+
+        source = sources_dir / ref_path
+        if not source.exists():
+            errors.append(f"{ref_path}:{line_no} 源文件不存在")
+            continue
+        try:
+            line_count = sum(1 for _ in source.open("r", encoding="utf-8", errors="ignore"))
+        except OSError as exc:
+            errors.append(f"{ref_path}:{line_no} 源文件读取失败: {exc}")
+            continue
+        if line_no < 1 or line_no > line_count:
+            errors.append(f"{ref_path}:{line_no} 行号超出源码范围 1..{line_count}")
+    return errors
 
 
 def page_metrics(root: Path, project: str, path: Path) -> PageMetrics:
@@ -141,8 +204,10 @@ def page_metrics(root: Path, project: str, path: Path) -> PageMetrics:
         code_wraps=content.count('<div class="code-wrap"'),
         min_code_wraps=min_code_wraps,
         bulk_line_piles=bulk_line_pile_count(content),
-        code_refs=len(CODE_REF_RE.findall(content)),
+        code_refs=len(PATH_LINE_REF_RE.findall(content)),
         low_explanation_refs=low_explanation_count(content),
+        explanation_ratio=explanation_ratio(content),
+        explanation_paragraphs=count_explanation_paragraphs(content),
         h3_count=len(re.findall(r"<h3[^>]*>", content)),
         layout_missing=layout_missing(content),
         banned_design=old_design_system(content),
@@ -154,13 +219,26 @@ def apply_page_depth_checks(metrics: PageMetrics) -> tuple[list[str], list[str]]
     warnings: list[str] = []
 
     min_line_refs = 50 if metrics.page_type == "main" else 20
+    min_explanation_ratio = 0.70 if metrics.page_type == "main" else 0.60
+    min_explanation_paragraphs = 6 if metrics.page_type == "main" else 3
     if metrics.line_refs < min_line_refs:
         errors.append(f"{metrics.path} 行号引用数 {metrics.line_refs} < {min_line_refs}")
     if metrics.code_wraps < metrics.min_code_wraps:
         errors.append(f"{metrics.path} 真实代码块数 {metrics.code_wraps} < {metrics.min_code_wraps}")
+    if metrics.explanation_paragraphs < min_explanation_paragraphs:
+        errors.append(
+            f"{metrics.path} 独立讲解段落数 {metrics.explanation_paragraphs} < {min_explanation_paragraphs}"
+        )
+    if metrics.code_refs == 0:
+        errors.append(f"{metrics.path} code path:NN 引用数 0")
+    elif metrics.explanation_ratio < min_explanation_ratio:
+        errors.append(
+            f"{metrics.path} 讲解密度 {metrics.explanation_ratio:.0%} < {min_explanation_ratio:.0%} "
+            f"({metrics.code_refs - metrics.low_explanation_refs}/{metrics.code_refs})"
+        )
     if metrics.bulk_line_piles:
         errors.append(f"{metrics.path} 命中批量行号堆砌段 {metrics.bulk_line_piles} 处")
-    if metrics.low_explanation_refs:
+    if metrics.low_explanation_refs and metrics.explanation_ratio >= min_explanation_ratio:
         warnings.append(
             f"{metrics.path} 讲解密度不足的 path:NN 引用 "
             f"{metrics.low_explanation_refs}/{metrics.code_refs}"
@@ -169,7 +247,9 @@ def apply_page_depth_checks(metrics: PageMetrics) -> tuple[list[str], list[str]]
     return errors, warnings
 
 
-def check_main_page(root: Path, project: str) -> tuple[dict, PageMetrics | None, list[str]]:
+def check_main_page(
+    root: Path, project: str, sources_dir: Path | None = None
+) -> tuple[dict, PageMetrics | None, list[str]]:
     main = root / f"{project}.html"
     if not main.exists():
         return {"exists": False, "errors": [f"主页面不存在: {main}"]}, None, []
@@ -196,6 +276,9 @@ def check_main_page(root: Path, project: str) -> tuple[dict, PageMetrics | None,
     depth_errors, depth_warnings = apply_page_depth_checks(metrics)
     errors.extend(depth_errors)
     warnings.extend(depth_warnings)
+    if sources_dir:
+        line_errors = verify_line_numbers(content, sources_dir)
+        errors.extend([f"{metrics.path}: {error}" for error in line_errors])
 
     has_mermaid = "mermaid" in content.lower()
     has_flow = ".flow" in content
@@ -213,6 +296,8 @@ def check_main_page(root: Path, project: str) -> tuple[dict, PageMetrics | None,
             "bulk_line_piles": metrics.bulk_line_piles,
             "code_refs": metrics.code_refs,
             "low_explanation_refs": metrics.low_explanation_refs,
+            "explanation_ratio": metrics.explanation_ratio,
+            "explanation_paragraphs": metrics.explanation_paragraphs,
             "h3_count": metrics.h3_count,
             "deep_links": deep_count,
             "has_mermaid": has_mermaid,
@@ -225,7 +310,9 @@ def check_main_page(root: Path, project: str) -> tuple[dict, PageMetrics | None,
     )
 
 
-def check_sub_pages(root: Path, project: str) -> tuple[dict, list[PageMetrics], list[str]]:
+def check_sub_pages(
+    root: Path, project: str, sources_dir: Path | None = None
+) -> tuple[dict, list[PageMetrics], list[str]]:
     sub_dir = root / project
     if not sub_dir.exists():
         return {"exists": False, "errors": [f"子页面目录不存在: {sub_dir}"]}, [], []
@@ -262,6 +349,9 @@ def check_sub_pages(root: Path, project: str) -> tuple[dict, list[PageMetrics], 
         depth_errors, depth_warnings = apply_page_depth_checks(metrics)
         errors.extend([e.replace(f"{metrics.path} ", f"{sub_page.name}: ") for e in depth_errors])
         warnings.extend(depth_warnings)
+        if sources_dir:
+            line_errors = verify_line_numbers(content, sources_dir)
+            errors.extend([f"{sub_page.name}: {error}" for error in line_errors])
 
         pages.append(
             {
@@ -273,6 +363,8 @@ def check_sub_pages(root: Path, project: str) -> tuple[dict, list[PageMetrics], 
                 "bulk_line_piles": metrics.bulk_line_piles,
                 "code_refs": metrics.code_refs,
                 "low_explanation_refs": metrics.low_explanation_refs,
+                "explanation_ratio": metrics.explanation_ratio,
+                "explanation_paragraphs": metrics.explanation_paragraphs,
                 "h3_count": metrics.h3_count,
             }
         )
@@ -283,21 +375,21 @@ def check_sub_pages(root: Path, project: str) -> tuple[dict, list[PageMetrics], 
 def check_index(root: Path, project: str) -> dict:
     index = root / "index.html"
     if not index.exists():
-        return {"exists": False, "errors": [], "warnings": ["index.html 不存在"]}
+        return {"exists": False, "errors": ["index.html 不存在"], "warnings": []}
 
     content = read_text(index)
     has_card = f'href="{project}.html"' in content or f"#{project}" in content
     return {
         "exists": True,
         "has_card": has_card,
-        "errors": [],
-        "warnings": [] if has_card else [f'index.html 未包含项目卡片（href="{project}.html" 或 #{project} 锚点）'],
+        "errors": [] if has_card else [f'index.html 未包含项目卡片（href="{project}.html" 或 #{project} 锚点）'],
+        "warnings": [],
     }
 
 
-def evaluate_project(root: Path, project: str) -> GateResult:
-    main_result, main_metrics, main_warnings = check_main_page(root, project)
-    sub_result, sub_metrics, sub_warnings = check_sub_pages(root, project)
+def evaluate_project(root: Path, project: str, sources_dir: Path | None = None) -> GateResult:
+    main_result, main_metrics, main_warnings = check_main_page(root, project, sources_dir)
+    sub_result, sub_metrics, sub_warnings = check_sub_pages(root, project, sources_dir)
     index_result = check_index(root, project)
 
     all_errors = main_result.get("errors", []) + sub_result.get("errors", []) + index_result.get("errors", [])
@@ -324,6 +416,10 @@ def print_text(result: GateResult) -> None:
         print(f"主页面 · {result.project}.html ({main['size_kb']}KB)")
         print(f"  源码引用: {main.get('src_refs', '?')}  行号引用: {main.get('line_refs', '?')}")
         print(f"  真实代码块: {main.get('code_wraps', '?')}/{main.get('min_code_wraps', '?')}")
+        print(
+            f"  讲解段落: {main.get('explanation_paragraphs', '?')}  "
+            f"讲解密度: {main.get('explanation_ratio', 0):.0%}"
+        )
         print(f"  H3 章节: {main.get('h3_count', '?')}  深度阅读: {main.get('deep_links', '?')}")
         print(f"  架构图: mermaid={main.get('has_mermaid', False)}, flow={main.get('has_flow', False)}")
 
@@ -333,6 +429,7 @@ def print_text(result: GateResult) -> None:
         print(
             f"  {page['name']:50s} {page['size_kb']:3d}KB  "
             f"L_refs={page['line_refs']:3d}  code={page['code_wraps']:2d}/{page['min_code_wraps']}  "
+            f"expl={page['explanation_paragraphs']:2d}  ratio={page['explanation_ratio']:.0%}  "
             f"H3={page['h3_count']}"
         )
 
@@ -361,13 +458,15 @@ def parse_args(argv: Iterable[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Validate generated github-trending project pages.")
     parser.add_argument("project", help="项目名（小写连字符，如 opentag）")
     parser.add_argument("--root", "--page-dir", dest="root", default=".", help="页面所在目录，默认当前目录")
+    parser.add_argument("--sources", type=Path, help="可选源码目录，用于校验 code path:NN 行号真实性")
     parser.add_argument("--json", action="store_true", help="JSON 输出")
     return parser.parse_args(list(argv))
 
 
 def main(argv: Iterable[str] | None = None) -> int:
     args = parse_args(sys.argv[1:] if argv is None else argv)
-    result = evaluate_project(Path(args.root).resolve(), args.project)
+    sources_dir = args.sources.resolve() if args.sources else None
+    result = evaluate_project(Path(args.root).resolve(), args.project, sources_dir)
     if args.json:
         print(result_to_json(result))
     else:
