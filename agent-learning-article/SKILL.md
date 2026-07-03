@@ -129,20 +129,21 @@ Read `/tmp/usersite/agent_learning/index.html`。做两件事：
 
 ### 3a. 加 article-card
 
-在 article-grid 区域的最后一个 `</a>`（现有卡片）后面追加：
+在 article-grid 区域的最后一个 `</a>`（现有卡片）后面追加。**注意：卡片使用 .date / .zh-title / .en-title / .summary / .status 类名，不是自定义的类名。**
 
 ```html
-<a class="article-card" href="articles/{slug}.html">
-  <div class="article-card-meta">{发布日期} · Anthropic Engineering</div>
-  <h3 class="article-card-title">{中文标题}</h3>
-  <p class="article-card-desc">{50-80 字中文摘要，从原文实际内容提炼}</p>
-  <div class="article-card-link">阅读全文 →</div>
-</a>
+      <a class="article-card" href="articles/{slug}.html">
+        <div class="date">{发布日期}</div>
+        <h3 class="zh-title">{中文标题}</h3>
+        <p class="en-title">{英文原标题}</p>
+        <p class="summary">{50-80 字中文摘要，从原文实际内容提炼}</p>
+        <span class="status done">✓ 已发布</span>
+      </a>
 ```
 
 ### 3b. 改计数
 
-把 header 区的 `已发布 X / 24` 改为 `已发布 {X+1} / 24`。Read 文件确认当前 X 的实际文本。
+把 header 区的 `<p class="meta">24 篇文章 · 持续更新中 · X / 24 已发布</p>` 改为 `<p class="meta">24 篇文章 · 持续更新中 · {X+1} / 24 已发布</p>`。Read 文件确认当前 X 的值。
 
 ---
 
