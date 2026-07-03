@@ -22,7 +22,7 @@ triggers:
 - **slug**：文件名（如 `claude-code-sandboxing`，不含 `.md`）
 - **原文标题**：从 `.md` 的 first heading 取
 - **原文 URL**：`https://www.anthropic.com/engineering/{slug}`
-- **当前计数 N**：当前 header 区的 `已发布 X / 24` 的数字（操作后改成 X+1）
+- **当前计数 N**：当前 header 区的 `<p class="meta">24 篇文章 · 持续更新中 · X / 24 已发布</p>` 中的数字 X
 - **发布日期**：从原文 `.md` 的文件时间或内容取
 
 ---
