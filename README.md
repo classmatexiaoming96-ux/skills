@@ -8,6 +8,7 @@ Four Hermes Agent skills:
 | youtube-to-html | YouTube video → GitHub Pages HTML (Chinese article) | `youtube-to-html/` |
 | daily-digest | Daily AI news digest → GitHub Pages | `daily-digest/` |
 | github-trending-monitor | Daily GitHub Trending source-level analysis | `github-trending-monitor/` |
+| agent-learning-article | Anthropic Engineering blog → Chinese HTML article for Agent Learning site | `agent-learning-article/` |
 
 ## yt-to-doc
 
