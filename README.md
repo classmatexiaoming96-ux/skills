@@ -1,6 +1,7 @@
 # Skills
 
-Four Hermes Agent skills:
+Reusable Agent Skills for Claude Code, Cursor, Codex, OpenCode, Hermes, and
+other coding agents that support the `SKILL.md` convention.
 
 | Skill | Description | Directory |
 |-------|-------------|-----------|
@@ -9,6 +10,9 @@ Four Hermes Agent skills:
 | daily-digest | Daily AI news digest → GitHub Pages | `daily-digest/` |
 | github-trending-monitor | Daily GitHub Trending source-level analysis | `github-trending-monitor/` |
 | agent-learning-article | Anthropic Engineering blog → Chinese HTML article for Agent Learning site | `agent-learning-article/` |
+| lark-beautiful-article | Source material → polished, native Feishu/Lark article | `lark-beautiful-article/` |
+| lark-archify | Validated Archify diagram → editable Feishu/Lark whiteboard | `lark-archify/` |
+| lark-kb-retriever | Progressive Feishu/Lark Drive and Wiki retrieval with citations | `lark-kb-retriever/` |
 
 ## yt-to-doc
 
@@ -27,3 +31,20 @@ Daily cron: aggregate AI news from HN / Reddit / GitHub / product launches, rend
 ## github-trending-monitor
 
 Daily cron: scan GitHub Trending for new AI/coding repos, clone and analyze source code, generate architecture deep-dive HTML pages, deploy to GitHub Pages.
+
+## Lark document skills
+
+The three `lark-*` skills are portable orchestration skills built on the
+official [`larksuite/cli`](https://github.com/larksuite/cli):
+
+- `lark-beautiful-article` edits heterogeneous source material into a native
+  Feishu/Lark document and uses safe, revision-aware updates.
+- `lark-archify` keeps Archify's typed JSON and validation workflow, then
+  publishes the trusted artifact as an editable whiteboard.
+- `lark-kb-retriever` searches Drive and Wiki progressively, reads only the
+  necessary sections, and returns document/block-level citations.
+
+They intentionally do not contain Codex-only UI metadata, so the same folders
+can be installed by any Agent Skills-compatible coding agent. Runtime use
+requires `lark-cli`; `lark-archify` additionally requires the upstream
+[`archify`](https://github.com/tt-a1i/archify) skill.
